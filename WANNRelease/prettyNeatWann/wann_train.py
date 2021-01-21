@@ -55,11 +55,11 @@ def gatherData(data,alg,gen,hyp,savePop=False):
     data - (DataGatherer) - updated run data
   """
   data.gatherData(alg.pop, alg.species)
-  if (gen%hyp['save_mod']) is 0:
+  if (gen%hyp['save_mod']) == 0:
     data = checkBest(data)
     data.save(gen)
 
-  if savePop is True: # Get a sample pop to play with in notebooks    
+  if savePop == True: # Get a sample pop to play with in notebooks    
     global fileName
     pref = 'log/' + fileName
     import pickle
@@ -83,7 +83,7 @@ def checkBest(data):
   * This is a bit hacky, but is only for data gathering, and not optimization
   """
   global filename, hyp
-  if data.newBest is True:
+  if data.newBest == True:
     bestReps = max(hyp['bestReps'], (nWorker-1))
     rep = np.tile(data.best[-1], bestReps)
     fitVector = batchMpiEval(rep, sameSeedForEachIndividual=False)
@@ -223,7 +223,7 @@ def mpi_fork(n):
       OMP_NUM_THREADS="1",
       IN_MPI="1"
     )
-    print( ["mpirun", "-np", str(n), sys.executable] + sys.argv)
+    # print( ["mpirun", "-np", str(n), sys.executable] + sys.argv)
     subprocess.check_call(["mpirun", "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
     return "parent"
   else:

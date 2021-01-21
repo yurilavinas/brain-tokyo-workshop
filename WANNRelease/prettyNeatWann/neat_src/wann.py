@@ -43,26 +43,26 @@ class Wann(Neat):
     """
     for i in range(np.shape(reward)[0]):
       self.pop[i].fitness = np.mean(reward[i,:])
+      self.pop[i].mean = np.mean(reward[i,:])
+      self.pop[i].var = np.var(reward[i,:])
       self.pop[i].fitMax  = np.max( reward[i,:])
       self.pop[i].nConn   = self.pop[i].nConn
-  
+      self.pop[i].rewards   = reward
 
-def probMoo(self):
-    """Rank population according to Pareto dominance.
-    """
-    # Compile objectives
-    meanFit = np.asarray([ind.fitness for ind in self.pop])
-    maxFit  = np.asarray([ind.fitMax  for ind in self.pop])
-    nConns  = np.asarray([ind.nConn   for ind in self.pop])
-    nConns[nConns==0] = 1 # No conns is always pareto optimal (but boring)
-    objVals = np.c_[meanFit,maxFit,1/nConns] # Maximize
-
-    # Alternate second objective
-    if self.p['alg_probMoo'] < np.random.rand():
-      rank = nsga_sort(objVals[:,[0,1]])
-    else:
-      rank = nsga_sort(objVals[:,[0,2]])
-
-    # Assign ranks
-    for i in range(len(self.pop)):
-      self.pop[i].rank = rank[i]
+  def probMoo(self):
+      """Rank population according to Pareto dominance.
+      """
+      # Compile objectives
+      meanFit = np.asarray([ind.fitness for ind in self.pop])
+      maxFit  = np.asarray([ind.fitMax  for ind in self.pop])
+      nConns  = np.asarray([ind.nConn   for ind in self.pop])
+      nConns[nConns==0] = 1 # No conns is always pareto optimal (but boring)
+      objVals = np.c_[meanFit,maxFit,1/nConns] # Maximize
+      # Alternate second objective
+      if self.p['alg_probMoo'] < np.random.rand():
+        rank = nsga_sort(objVals[:,[0,1]])
+      else:
+        rank = nsga_sort(objVals[:,[0,2]])
+      # Assign ranks
+      for i in range(len(self.pop)):
+        self.pop[i].rank = rank[i]

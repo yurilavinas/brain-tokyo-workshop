@@ -4,21 +4,27 @@ from matplotlib.pyplot import imread
 
 
 def make_env(env_name, seed=-1, render_mode=False):
-
   # -- Bipedal Walker ------------------------------------------------ -- #
   if (env_name.startswith("BipedalWalker")):
     if (env_name.startswith("BipedalWalkerHardcore")):
       import Box2D
       from domain.bipedal_walker import BipedalWalkerHardcore
       env = BipedalWalkerHardcore()
+      env.accel = 3
     elif (env_name.startswith("BipedalWalkerMedium")): 
       from domain.bipedal_walker import BipedalWalker
       env = BipedalWalker()
       env.accel = 3
+    
     else:
       from domain.bipedal_walker import BipedalWalker
       env = BipedalWalker()
 
+  elif (env_name.startswith("AugmentBipedalWalkerHardcore")): 
+      import Box2D
+      from domain.bipedal_walker_augmented import AugmentBipedalWalkerHardcore
+      env = AugmentBipedalWalkerHardcore()
+      env.accel = 3
 
   # -- VAE Racing ---------------------------------------------------- -- #
   elif (env_name.startswith("VAERacing")):

@@ -33,13 +33,15 @@ class WannDataGatherer():
 
   def gatherData(self, pop, species):
     # Readability
+    p = self.p
     fitness = [ind.fitness for ind in pop]
+    var = [ind.var for ind in pop]
     peakfit = [ind.fitMax for ind in pop]
     nodes = np.asarray([np.shape(ind.node)[1] for ind in pop])
     conns = np.asarray([ind.nConn for ind in pop])
     
     # --- Evaluation Scale ---------------------------------------------------
-    if len(self.x_scale) is 0:
+    if len(self.x_scale) == 0:
       self.x_scale = np.append(self.x_scale, len(pop))
     else:
       self.x_scale = np.append(self.x_scale, self.x_scale[-1]+len(pop))
@@ -48,7 +50,9 @@ class WannDataGatherer():
     
     # --- Best Individual ----------------------------------------------------
     self.elite.append(pop[np.argmax(fitness)])
-    if len(self.best) is 0:
+    if p['alg_selection'] == "var":
+      self.elite.append(pop[np.argmax(var)])
+    if len(self.best) == 0:
       self.best = copy.deepcopy(self.elite)
     elif (self.elite[-1].fitness > self.best[-1].fitness):
       self.best = np.append(self.best,copy.deepcopy(self.elite[-1]))
@@ -79,7 +83,9 @@ class WannDataGatherer():
   def display(self):
     return    "|---| Elite Fit: " + '{:.2f}'.format(self.fit_max[-1]) \
          + " \t|---| Best Fit:  "  + '{:.2f}'.format(self.fit_top[-1]) \
-         + " \t|---| Peak Fit:  "  + '{:.2f}'.format(self.fit_peak[-1])
+         + " \t|---| Peak Fit:  "  + '{:.2f}'.format(self.fit_peak[-1]) \
+         + " \t|---| Elite Mean "  + '{:.2f}'.format(self.best[-1].mean) \
+         + " \t|---| Elite Var:  "  + '{:.2f}'.format(self.best[-1].var)
 
   def save(self, gen=(-1), saveFullPop=False):
     ''' Save data to disk '''

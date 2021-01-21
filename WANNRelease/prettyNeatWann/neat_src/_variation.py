@@ -69,7 +69,6 @@ def recombine(self, species, innov, gen):
   parentB = np.random.randint(len(pop),size=(nOffspring,p['select_tournSize']))
   parents = np.vstack( (np.min(parentA,1), np.min(parentB,1) ) )
   parents = np.sort(parents,axis=0) # Higher fitness parent first    
-  
   # Breed child population
   for i in range(nOffspring):  
     if np.random.rand() > p['prob_crossover']:

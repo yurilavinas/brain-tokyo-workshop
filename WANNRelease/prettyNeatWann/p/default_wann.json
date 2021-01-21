@@ -1,7 +1,7 @@
 {
-    "task":"swingup",
+    "task":"biped",
     "alg_wDist": "standard",
-    "alg_nVals": 6,
+    "alg_nVals": 8,
     "alg_nReps": 4,
     "alg_probMoo": 0.80,
     "alg_act": 0,

@@ -48,7 +48,7 @@ class WannGymTask(GymTask):
 
 
   def getFitness(self, wVec, aVec, hyp, \
-                    seed=-1,nRep=False,nVals=6,view=False,returnVals=False):
+                    seed=-1,nRep=False,nVals=8,view=False,returnVals=False):
     """Get fitness of a single individual with distribution of weights
   
     Args:
@@ -73,8 +73,8 @@ class WannGymTask(GymTask):
       nRep = hyp['alg_nReps']
 
     # Set weight values to test WANN with
-    if (hyp['alg_wDist'] == "standard") and nVals==6: # Double, constant, and half signal 
-      wVals = np.array((-2,-1.0,-0.5,0.5,1.0,2))
+    if (hyp['alg_wDist'] == "standard") and nVals==8: # Double, constant, and half signal 
+      wVals = np.array((-2,-1.5,-1.0,-0.5,0.5,1.0,1.5,2))
     else:
       wVals = np.linspace(-self.absWCap, self.absWCap ,nVals)
 
