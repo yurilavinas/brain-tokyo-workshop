@@ -49,17 +49,26 @@ class WannDataGatherer():
 
     
     # --- Best Individual ----------------------------------------------------
-    self.elite.append(pop[np.argmax(fitness)])
     if p['alg_selection'] == "var":
       self.elite.append(pop[np.argmax(var)])
-    if len(self.best) == 0:
-      self.best = copy.deepcopy(self.elite)
-    elif (self.elite[-1].fitness > self.best[-1].fitness):
-      self.best = np.append(self.best,copy.deepcopy(self.elite[-1]))
-      self.newBest = True
+      if len(self.best) == 0:
+        self.best = copy.deepcopy(self.elite)
+      elif (self.elite[-1].var > self.best[-1].var):
+        self.best = np.append(self.best,copy.deepcopy(self.elite[-1]))
+        self.newBest = True
+      else:
+        self.best = np.append(self.best,copy.deepcopy(self.best[-1]))   
+        self.newBest = False
     else:
-      self.best = np.append(self.best,copy.deepcopy(self.best[-1]))   
-      self.newBest = False
+      self.elite.append(pop[np.argmax(fitness)])
+      if len(self.best) == 0:
+        self.best = copy.deepcopy(self.elite)
+      elif (self.elite[-1].fitness > self.best[-1].fitness):
+        self.best = np.append(self.best,copy.deepcopy(self.elite[-1]))
+        self.newBest = True
+      else:
+        self.best = np.append(self.best,copy.deepcopy(self.best[-1]))   
+        self.newBest = False
     # ------------------------------------------------------------------------ 
 
     
