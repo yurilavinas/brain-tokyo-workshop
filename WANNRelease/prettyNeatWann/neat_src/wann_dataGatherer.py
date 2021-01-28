@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import copy
-from .ann import exportNet
+from .ann import exportNet, importNet
 
 class WannDataGatherer():
   ''' Data recorder for WANN algorithm'''
@@ -46,7 +46,6 @@ class WannDataGatherer():
     else:
       self.x_scale = np.append(self.x_scale, self.x_scale[-1]+len(pop))
     # ------------------------------------------------------------------------ 
-
     
     # --- Best Individual ----------------------------------------------------
     if p['alg_selection'] == "var":
@@ -93,8 +92,13 @@ class WannDataGatherer():
     return    "|---| Elite Fit: " + '{:.2f}'.format(self.fit_max[-1]) \
          + " \t|---| Best Fit:  "  + '{:.2f}'.format(self.fit_top[-1]) \
          + " \t|---| Peak Fit:  "  + '{:.2f}'.format(self.fit_peak[-1]) \
-         + " \t|---| Elite Mean "  + '{:.2f}'.format(self.best[-1].mean) \
-         + " \t|---| Elite Var:  "  + '{:.2f}'.format(self.best[-1].var)
+         + " \t|---| Best Mean "  + '{:.2f}'.format(self.best[-1].mean) \
+         + " \t|---| Best Var:  "  + '{:.2f}'.format(self.best[-1].var)
+
+         # elite fit, best so the pop, mean value
+         # best fit, mean value of the best of the search
+         # peak fit, max mean value of the best of the search
+         # elite mean and var are wrong, they should be best mean and var from the best of the search
 
   def save(self, gen=(-1), saveFullPop=False):
     ''' Save data to disk '''
@@ -131,12 +135,16 @@ class WannDataGatherer():
     # ------------------------------------------------------------------------
 
   def savePop(self,pop,filename):
+
+
     folder = 'log/' + filename + '_pop/'
     if not os.path.exists(folder):
       os.makedirs(folder)
 
     for i in range(len(pop)):
       exportNet(folder+'ind_'+str(i)+'.out', pop[i].wMat, pop[i].aVec)
+
+    folder = 'log/' + filename + '_pop/gen'  
 
 def lsave(filename, data):
   np.savetxt(filename, data, delimiter=',',fmt='%1.2e')

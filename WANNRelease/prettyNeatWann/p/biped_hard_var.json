@@ -1,9 +1,9 @@
 {
     "task":"bipedhard",
     "alg_nReps": 4,
-    "maxGen": 100,
-    "popSize": 480,
+    "maxGen": 20,
+    "popSize": 10,
     "prob_initEnable": 0.25,
-    "select_tournSize": 16,
-    "alg_selection": "var"
+    "select_tournSize": 2,
+    "alg_selection": "var"	
 }

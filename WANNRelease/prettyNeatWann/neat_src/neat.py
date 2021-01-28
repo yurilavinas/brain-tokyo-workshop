@@ -3,6 +3,7 @@ from scipy import stats
 import math
 import copy
 import json
+import os
 
 from domain import *  # Task environments
 from utils import *
@@ -45,11 +46,12 @@ class Neat():
   from ._speciate  import Species, speciate, compatDist,\
                           assignSpecies, assignOffspring  
 
-  def ask(self):
+  def ask(self, init=0):
     """Returns newly evolved population
     """
     p = self.p
-    if len(self.pop) == 0:
+    if len(self.pop) == 0 and init == 0:
+      print("Initializing population...")
       self.initPop()      # Initialize population
     else:
       if p['alg_selection'] == "mean":
@@ -63,7 +65,7 @@ class Neat():
       self.speciate()     # Divide population into species
       self.evolvePop()    # Create child population 
 
-    return self.pop       # Send child population for evaluation
+    return self.pop    # Send child population for evaluation
 
   def tell(self,reward):
     """Assigns fitness to current population
@@ -122,9 +124,12 @@ class Neat():
     innov = np.zeros([5,nConn])
     innov[0:3,:] = pop[0].conn[0:3,:]
     innov[3,:] = -1
+
     
     self.pop = pop
     self.innov = innov
+
+    return pop
 
   def probMoo(self):
     """Rank population according to Pareto dominance.
@@ -155,18 +160,14 @@ class Neat():
 
     nConns[nConns==0] = 1 # No conns is always pareto optimal (but boring)
     objVals = np.c_[meanFit,varFit,1/nConns] # Maximize
-    # Alternate second objective
-    if self.p['alg_probMoo'] < np.random.rand():
-      rank = nsga_sort(objVals[:,[0,1]])
-    else:
-      rank = nsga_sort(objVals[:,[0,2]])
+
+    rank = nsga_sort(objVals)  
 
     # Assign ranks
     for i in range(len(self.pop)):
       self.pop[i].rank = rank[i]
 
   def selFailure(self):
-
     varFit = np.asarray([ind.var for ind in self.pop])
     rank = np.argsort(varFit)[::-1]
     for i in range(len(self.pop)):

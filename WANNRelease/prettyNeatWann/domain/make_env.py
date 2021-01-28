@@ -10,11 +10,11 @@ def make_env(env_name, seed=-1, render_mode=False):
       import Box2D
       from domain.bipedal_walker import BipedalWalkerHardcore
       env = BipedalWalkerHardcore()
-      env.accel = 3
+      env.accel = 10
     elif (env_name.startswith("BipedalWalkerMedium")): 
       from domain.bipedal_walker import BipedalWalker
       env = BipedalWalker()
-      env.accel = 3
+      env.accel = 10
     
     else:
       from domain.bipedal_walker import BipedalWalker
@@ -24,7 +24,7 @@ def make_env(env_name, seed=-1, render_mode=False):
       import Box2D
       from domain.bipedal_walker_augmented import AugmentBipedalWalkerHardcore
       env = AugmentBipedalWalkerHardcore()
-      env.accel = 3
+      env.accel = 10
 
   # -- VAE Racing ---------------------------------------------------- -- #
   elif (env_name.startswith("VAERacing")):
@@ -68,3 +68,5 @@ def make_env(env_name, seed=-1, render_mode=False):
     domain.seed(seed)
 
   return env
+
+  

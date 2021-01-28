@@ -148,7 +148,7 @@ class BipedalWalker(gym.Env):
         self.timer = 0
 
     def seed(self, seed=None):
-        self.np_random, seed = seeding.np_random(seed)
+        self.np_random, seed = seeding.np_random(42)
         return [seed]
 
     def _destroy(self):
@@ -191,6 +191,7 @@ class BipedalWalker(gym.Env):
                     (x+TERRAIN_STEP, y-4*TERRAIN_STEP),
                     (x,              y-4*TERRAIN_STEP),
                     ]
+
                 self.fd_polygon.shape.vertices=poly
                 t = self.world.CreateStaticBody(
                     fixtures = self.fd_polygon)
@@ -202,6 +203,7 @@ class BipedalWalker(gym.Env):
                     fixtures = self.fd_polygon)
                 t.color1, t.color2 = (1,1,1), (0.6,0.6,0.6)
                 self.terrain.append(t)
+
                 counter += 2
                 original_y = y
 
@@ -276,6 +278,22 @@ class BipedalWalker(gym.Env):
             color = (0.4, 0.6, 0.3)
             poly += [ (poly[1][0], 0), (poly[0][0], 0) ]
             self.terrain_poly.append( (poly, color) )
+
+            # poly = [
+            #     (-self.terrain_x[i],   self.terrain_y[i]),
+            #     (-self.terrain_x[i+1], self.terrain_y[i+1])
+            #     ]
+            # self.fd_edge.shape.vertices=poly
+            # t = self.world.CreateStaticBody(
+            #     fixtures = self.fd_edge)
+            # color = (0.3, 1.0 if i%2==0 else 0.8, 0.3)
+            # t.color1 = color
+            # t.color2 = color
+            # self.terrain.append(t)
+            # color = (0.4, 0.6, 0.3)
+            # poly += [ (poly[1][0], 0), (poly[0][0], 0) ]
+            # self.terrain_poly.append( (poly, color) )
+
         self.terrain.reverse()
 
     def _generate_clouds(self):
@@ -372,10 +390,10 @@ class BipedalWalker(gym.Env):
         class LidarCallback(Box2D.b2.rayCastCallback):
             def ReportFixture(self, fixture, point, normal, fraction):
                 if (fixture.filterData.categoryBits & 1) == 0:
-                    return 1
+                    return -1
                 self.p2 = point
                 self.fraction = fraction
-                return 0
+                return fraction
         self.lidar = [LidarCallback() for _ in range(10)]
 
         return self.step(np.array([0,0,0,0]))[0]
@@ -463,13 +481,7 @@ class BipedalWalker(gym.Env):
 
         return np.array(state), reward, done, {}
 
-    def render(self, mode='human', close=False):
-        if close:
-            if self.viewer is not None:
-                self.viewer.close()
-                self.viewer = None
-            return
-
+    def render(self, mode='human'):
         from gym.envs.classic_control import rendering
         if self.viewer is None:
             self.viewer = rendering.Viewer(VIEWPORT_W, VIEWPORT_H)
@@ -518,6 +530,11 @@ class BipedalWalker(gym.Env):
         self.viewer.draw_polyline(f + [f[0]], color=(0,0,0), linewidth=2 )
 
         return self.viewer.render(return_rgb_array = mode=='rgb_array')
+
+    def close(self):
+        if self.viewer is not None:
+            self.viewer.close()
+            self.viewer = None
 
 class BipedalWalkerHardcore(BipedalWalker):
     hardcore = True

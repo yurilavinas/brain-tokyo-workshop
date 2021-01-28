@@ -19,7 +19,6 @@ class WannGymTask(GymTask):
       paramOnly - (bool)  - only load parameters instead of launching task?
       nReps     - (nReps) - number of trials to get average fitness
     """
-
     GymTask.__init__(self, game, paramOnly, nReps)
 
 
@@ -47,8 +46,8 @@ class WannGymTask(GymTask):
     return wMat
 
 
-  def getFitness(self, wVec, aVec, hyp, \
-                    seed=-1,nRep=False,nVals=8,view=False,returnVals=False):
+  def getFitness(self, wVec, aVec, hyp, game,\
+                    nRep=False,nVals=8,view=False,returnVals=False):
     """Get fitness of a single individual with distribution of weights
   
     Args:
@@ -81,14 +80,22 @@ class WannGymTask(GymTask):
 
     # Get reward from 'reps' rollouts -- test population on same seeds
     reward = np.empty((nRep,nVals))
+
+    env = make_env(game.env_name)
+    # random.seed(42)
+    # np.random.seed(42)
+    # env.seed(42)
     for iRep in range(nRep):
+      
       for iVal in range(nVals):
         wMat = self.setWeights(wVec,wVals[iVal])
-        if seed == -1:
-          reward[iRep,iVal] = self.testInd(wMat, aVec, seed=seed,view=view)
-        else:
-          reward[iRep,iVal] = self.testInd(wMat, aVec, seed=seed+iRep,view=view)
-          
+        # if seed == -1:
+        #   reward[iRep,iVal] = self.testInd(wMat, aVec, seed=seed,view=view)
+        # else:
+        #   reward[iRep,iVal] = self.testInd(wMat, aVec, seed=seed+iRep,view=view)
+        reward[iRep,iVal] = self.testInd(wMat, aVec, game, env=env, folder = str(iRep)+"_"+str(iVal), view=view)
+      
+      env.close()
     if returnVals is True:
       return np.mean(reward,axis=0), wVals
     return np.mean(reward,axis=0)

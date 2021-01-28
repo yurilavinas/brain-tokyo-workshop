@@ -6,6 +6,7 @@ import argparse
 import subprocess
 import numpy as np
 np.set_printoptions(precision=2, linewidth=160) 
+# from neat_src.neat import initPopResume
 
 # MPI
 from mpi4py import MPI
@@ -22,24 +23,39 @@ def master():
   """Main NEAT optimization script
   """
   global fileName, hyp
-  data = WannDataGatherer(fileName, hyp)
+  filename = fileName
+  data = WannDataGatherer(filename, hyp)
   alg  = Wann(hyp)
 
-  for gen in range(hyp['maxGen']):        
-    pop = alg.ask()            # Get newly evolved individuals from NEAT  
+  # checkpoint - begin
+  init = 0
+  pref = 'log/' + fileName + '_pop/'
+  if os.path.exists(pref):
+    print("loading pop. data from file...")
+    pop = alg.initPop()
+    import pickle
+    with open(pref+'_pop.checkpoint', 'rb') as fp:
+      pop = pickle.load(fp)
+    init = pop[0].gen + 1
+
+  for gen in range(init,hyp['maxGen']): 
+    pop = alg.ask(init)            # Get newly evolved individuals from NEAT 
     reward = batchMpiEval(pop)  # Send pop to be evaluated by workers
     alg.tell(reward)           # Send fitness to NEAT    
-
-    data = gatherData(data,alg,gen,hyp)
+    pop[0].gen = gen
+    data = gatherData(data,alg,gen,init,hyp)
     print(gen, '\t', data.display())
 
+  # attrs = vars(pop[0])
+  # print(', '.join("%s: %s" % item for item in attrs.items())) 
+
   # Clean up and data gathering at run end
-  data = gatherData(data,alg,gen,hyp,savePop=True)
+  data = gatherData(data,alg,gen,init,hyp,savePop=True)
   data.save()
-  data.savePop(alg.pop,fileName) # Save population as 2D numpy arrays
+  data.savePop(alg.pop,filename) # Save population as 2D numpy arrays
   stopAllWorkers()
 
-def gatherData(data,alg,gen,hyp,savePop=False):
+def gatherData(data,alg,gen,diff,hyp,savePop=False):
   """Collects run data, saves it to disk, and exports pickled population
 
   Args:
@@ -55,12 +71,19 @@ def gatherData(data,alg,gen,hyp,savePop=False):
     data - (DataGatherer) - updated run data
   """
   data.gatherData(alg.pop, alg.species)
+
+  pref = 'log/' + fileName + '_pop/'
+  if not os.path.exists(pref):
+      os.makedirs(pref)
+  import pickle
+  with open(pref+'_pop.checkpoint', 'wb') as fp:
+    pickle.dump(alg.pop,fp)
   if (gen%hyp['save_mod']) == 0:
     data = checkBest(data)
-    data.save(gen)
+    data.save(gen-diff)
 
   if savePop == True: # Get a sample pop to play with in notebooks    
-    global fileName
+    # global fileName
     pref = 'log/' + fileName
     import pickle
     with open(pref+'_pop.obj', 'wb') as fp:
@@ -101,7 +124,7 @@ def checkBest(data):
 
 
 # -- Parallelization ----------------------------------------------------- -- #
-def batchMpiEval(pop, sameSeedForEachIndividual=True):
+def batchMpiEval(pop, sameSeedForEachIndividual=False):
   """Sends population to workers for evaluation one batch at a time.
 
   Args:
@@ -146,7 +169,7 @@ def batchMpiEval(pop, sameSeedForEachIndividual=True):
         if sameSeedForEachIndividual is False:
           comm.send(seed.item(i), dest=(iWork)+1, tag=5)
         else:
-          comm.send(  seed, dest=(iWork)+1, tag=5)        
+          comm.send(seed, dest=(iWork)+1, tag=5)        
 
       else: # message size of 0 is signal to shutdown workers
         n_wVec = 0
@@ -193,8 +216,12 @@ def slave():
       comm.Recv(aVec, source=0,  tag=4) # recieve it
       seed = comm.recv(source=0, tag=5) # random seed as int
 
-      result = task.getFitness(wVec,aVec,hyp,seed=seed) # process it
+
+
+      result = task.getFitness(wVec,aVec,hyp, games[hyp['task']]) # process it
       comm.Send(result, dest=0)            # send it back
+
+
 
     if n_wVec < 0: # End signal recieved
       print('Worker # ', rank, ' shutting down.')
@@ -223,7 +250,6 @@ def mpi_fork(n):
       OMP_NUM_THREADS="1",
       IN_MPI="1"
     )
-    # print( ["mpirun", "-np", str(n), sys.executable] + sys.argv)
     subprocess.check_call(["mpirun",  "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
     # subprocess.check_call(["mpirun", "--allow-run-as-root",  "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
     return "parent"
@@ -231,7 +257,6 @@ def mpi_fork(n):
     global nWorker, rank
     nWorker = comm.Get_size()
     rank = comm.Get_rank()
-    #print('assigning the rank and nworkers', nWorker, rank)
     return "child"
 
 
