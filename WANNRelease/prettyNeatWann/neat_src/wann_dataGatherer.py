@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import copy
-from .ann import exportNet, importNet
+from .ann import exportNet
 
 class WannDataGatherer():
   ''' Data recorder for WANN algorithm'''
@@ -19,7 +19,7 @@ class WannDataGatherer():
     self.best = []
     self.bestFitVec = []
     self.spec_fit = []
-    self.field = ['x_scale','fit_med','fit_max','fit_top','fit_peak',\
+    self.field = ['x_scale','fit_med','best_var','fit_max','fit_top','fit_peak',\
                   'node_med','conn_med',\
                   'elite','best']
                   
@@ -46,6 +46,7 @@ class WannDataGatherer():
     else:
       self.x_scale = np.append(self.x_scale, self.x_scale[-1]+len(pop))
     # ------------------------------------------------------------------------ 
+
     
     # --- Best Individual ----------------------------------------------------
     if p['alg_selection'] == "var":
@@ -75,9 +76,11 @@ class WannDataGatherer():
     self.node_med = np.append(self.node_med,np.median(nodes))
     self.conn_med = np.append(self.conn_med,np.median(conns))
     self.fit_med  = np.append(self.fit_med, np.median(fitness))
+    self.best_var = np.append(self.best_var, self.best[-1].var)
     self.fit_max  = np.append(self.fit_max,  self.elite[-1].fitness)
     self.fit_top  = np.append(self.fit_top,  self.best[-1].fitness)
     self.fit_peak = np.append(self.fit_peak, self.best[-1].fitMax)
+    
     # ------------------------------------------------------------------------ 
 
 
@@ -92,13 +95,7 @@ class WannDataGatherer():
     return    "|---| Elite Fit: " + '{:.2f}'.format(self.fit_max[-1]) \
          + " \t|---| Best Fit:  "  + '{:.2f}'.format(self.fit_top[-1]) \
          + " \t|---| Peak Fit:  "  + '{:.2f}'.format(self.fit_peak[-1]) \
-         + " \t|---| Best Mean "  + '{:.2f}'.format(self.best[-1].mean) \
          + " \t|---| Best Var:  "  + '{:.2f}'.format(self.best[-1].var)
-
-         # elite fit, best so the pop, mean value
-         # best fit, mean value of the best of the search
-         # peak fit, max mean value of the best of the search
-         # elite mean and var are wrong, they should be best mean and var from the best of the search
 
   def save(self, gen=(-1), saveFullPop=False):
     ''' Save data to disk '''
@@ -107,13 +104,15 @@ class WannDataGatherer():
 
     # --- Generation fit/complexity stats ------------------------------------ 
     gStatLabel = ['x_scale',\
-                  'fit_med','fit_max','fit_top','fit_peak',\
+                  'fit_med', 'best_var','fit_max','fit_top','fit_peak',\
                   'node_med','conn_med']
     genStats = np.empty((len(self.x_scale),0))
     for i in range(len(gStatLabel)):
       #e.g.         self.    fit_max          [:,None]
       evalString = 'self.' + gStatLabel[i] + '[:,None]'
       genStats = np.hstack((genStats, eval(evalString)))
+    print('genStats')
+    print(genStats)
     lsave(pref + '_stats.out', genStats)
     # ------------------------------------------------------------------------ 
 
@@ -135,16 +134,12 @@ class WannDataGatherer():
     # ------------------------------------------------------------------------
 
   def savePop(self,pop,filename):
-
-
     folder = 'log/' + filename + '_pop/'
     if not os.path.exists(folder):
       os.makedirs(folder)
 
     for i in range(len(pop)):
       exportNet(folder+'ind_'+str(i)+'.out', pop[i].wMat, pop[i].aVec)
-
-    folder = 'log/' + filename + '_pop/gen'  
 
 def lsave(filename, data):
   np.savetxt(filename, data, delimiter=',',fmt='%1.2e')

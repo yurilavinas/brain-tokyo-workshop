@@ -45,7 +45,8 @@ def master():
     pop[0].gen = gen
     data = gatherData(data,alg,gen,init,hyp)
     print(gen, '\t', data.display())
-
+    data.save()
+    exit()
   # attrs = vars(pop[0])
   # print(', '.join("%s: %s" % item for item in attrs.items())) 
 
@@ -106,7 +107,7 @@ def checkBest(data):
   * This is a bit hacky, but is only for data gathering, and not optimization
   """
   global filename, hyp
-  if data.newBest == True:
+  if data.newBest is True:
     bestReps = max(hyp['bestReps'], (nWorker-1))
     rep = np.tile(data.best[-1], bestReps)
     fitVector = batchMpiEval(rep, sameSeedForEachIndividual=False)
@@ -124,7 +125,7 @@ def checkBest(data):
 
 
 # -- Parallelization ----------------------------------------------------- -- #
-def batchMpiEval(pop, sameSeedForEachIndividual=False):
+def batchMpiEval(pop, sameSeedForEachIndividual=True):
   """Sends population to workers for evaluation one batch at a time.
 
   Args:
@@ -169,7 +170,7 @@ def batchMpiEval(pop, sameSeedForEachIndividual=False):
         if sameSeedForEachIndividual is False:
           comm.send(seed.item(i), dest=(iWork)+1, tag=5)
         else:
-          comm.send(seed, dest=(iWork)+1, tag=5)        
+          comm.send(  seed, dest=(iWork)+1, tag=5)        
 
       else: # message size of 0 is signal to shutdown workers
         n_wVec = 0
@@ -216,12 +217,8 @@ def slave():
       comm.Recv(aVec, source=0,  tag=4) # recieve it
       seed = comm.recv(source=0, tag=5) # random seed as int
 
-
-
       result = task.getFitness(wVec,aVec,hyp, games[hyp['task']]) # process it
       comm.Send(result, dest=0)            # send it back
-
-
 
     if n_wVec < 0: # End signal recieved
       print('Worker # ', rank, ' shutting down.')
@@ -250,13 +247,14 @@ def mpi_fork(n):
       OMP_NUM_THREADS="1",
       IN_MPI="1"
     )
-    subprocess.check_call(["mpirun",  "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
-    # subprocess.check_call(["mpirun", "--allow-run-as-root",  "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
+    print( ["/usr/lib64/openmpi/bin/mpirun ", "-np", str(n), sys.executable] + sys.argv)
+    subprocess.check_call(["mpirun", "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
     return "parent"
   else:
     global nWorker, rank
     nWorker = comm.Get_size()
     rank = comm.Get_rank()
+    #print('assigning the rank and nworkers', nWorker, rank)
     return "child"
 
 
@@ -302,9 +300,4 @@ if __name__ == "__main__":
   # Use MPI if parallel
   if "parent" == mpi_fork(args.num_worker+1): os._exit(0)
 
-  main(args)                              
-  
-
-
-
-
+  main(args)              

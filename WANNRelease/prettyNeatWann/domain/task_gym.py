@@ -5,6 +5,7 @@ from domain.make_env import make_env
 from neat_src import *
 import gym
 
+
 class GymTask():
   """Problem domain to be solved by neural network. Uses OpenAI Gym patterns.
   """ 
@@ -68,7 +69,7 @@ class GymTask():
   #   # env.close()
   #   return fitness
 
-  def testInd(self, wVec, aVec, game, env, folder=None, hyp=None, view=False, seed=-1):
+  def testInd(self, wVec, aVec, game, folder=None, hyp=None, view=False, seed=-1):
     """Evaluate individual on task
     Args:
       wVec    - (np_array) - weight matrix as a flattened vector
@@ -83,13 +84,17 @@ class GymTask():
     Returns:
       fitness - (float)    - reward earned in trial
     """
+    env = make_env(game.env_name, seed)
+
     # if seed >= 0:
-    #   random.seed(seed)
-    #   np.random.seed(seed)
-    #   self.env.seed(seed)
+    #   random.seed(4)
+    #   np.random.seed(4)
+      # self.env.seed(4)
     
-    # if folder != None:
-      # env = gym.wrappers.Monitor(env, "recording_" + folder)
+    
+    if folder != None:
+      env.render()
+      # env = gym.wrappers.Monitor(env, "recording_" + str(game.env_name) + "_" + folder, force=True)
     # env.close()
     state = env.reset()
     # self.env.t = 0
@@ -118,5 +123,7 @@ class GymTask():
       if done:
         break
 
+    # if folder != None:
+    env.close() 
     
     return totalReward

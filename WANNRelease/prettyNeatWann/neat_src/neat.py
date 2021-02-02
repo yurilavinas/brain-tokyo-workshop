@@ -1,9 +1,7 @@
 import numpy as np
-from scipy import stats
 import math
 import copy
 import json
-import os
 
 from domain import *  # Task environments
 from utils import *
@@ -38,8 +36,6 @@ class Neat():
     self.gen     = 0  
     self.mean     = 0  
     self.var     = 0  
-
-    self.indType = Ind
 
   ''' Subfunctions '''
   from ._variation import evolvePop, recombine
@@ -113,23 +109,19 @@ class Neat():
     # Create population of individuals with varied weights
     pop = []
     for i in range(p['popSize']):
-        newInd = self.indType(conn, node)
+        newInd = Ind(conn, node)
         newInd.conn[3,:] = (2*(np.random.rand(1,nConn)-0.5))*p['ann_absWCap']
         newInd.conn[4,:] = np.random.rand(1,nConn) < p['prob_initEnable']
         newInd.express()
         newInd.birth = 0
         pop.append(copy.deepcopy(newInd))  
-
     # - Create Innovation Record -
     innov = np.zeros([5,nConn])
     innov[0:3,:] = pop[0].conn[0:3,:]
     innov[3,:] = -1
-
     
     self.pop = pop
     self.innov = innov
-
-    return pop
 
   def probMoo(self):
     """Rank population according to Pareto dominance.
@@ -137,9 +129,9 @@ class Neat():
     # Compile objectives
     meanFit = np.asarray([ind.fitness for ind in self.pop])
     nConns  = np.asarray([ind.nConn   for ind in self.pop])
-
     nConns[nConns==0] = 1 # No connections is pareto optimal but boring...
     objVals = np.c_[meanFit,1/nConns] # Maximize
+
     # Alternate between two objectives and single objective
     if self.p['alg_probMoo'] < np.random.rand():
       rank = nsga_sort(objVals[:,[0,1]])
@@ -149,6 +141,7 @@ class Neat():
     # Assign ranks
     for i in range(len(self.pop)):
       self.pop[i].rank = rank[i]
+ 
 
   def selFailureMulti(self):
     """Rank population according to Pareto dominance.
@@ -192,6 +185,7 @@ class Neat():
     for i in range(len(self.pop)):
       self.pop[i].rank = rank[i]
 
+      
 def loadHyp(pFileName, printHyp=False):
   """Loads hyperparameters from .json file
   Args:
@@ -226,7 +220,7 @@ def updateHyp(hyp,pFileName=None):
   """Overwrites default hyperparameters with those from second .json file
   """
   if pFileName != None:
-    # print('\t*** Running with hyperparameters: ', pFileName, '\t***')
+    print('\t*** Running with hyperparameters: ', pFileName, '\t***')
     with open(pFileName) as data_file: update = json.load(data_file)
     hyp.update(update)
 

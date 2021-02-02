@@ -47,7 +47,7 @@ class WannGymTask(GymTask):
 
 
   def getFitness(self, wVec, aVec, hyp, game,\
-                    nRep=False,nVals=8,view=False,returnVals=False):
+                    nRep=False,seed=-1, nVals=8,view=False,returnVals=False):
     """Get fitness of a single individual with distribution of weights
   
     Args:
@@ -79,21 +79,40 @@ class WannGymTask(GymTask):
 
 
     # Get reward from 'reps' rollouts -- test population on same seeds
+    tmp1 = np.empty((nRep,nVals))
+    tmp2 = np.empty((nRep,nVals))
     reward = np.empty((nRep,nVals))
 
-    envs = list()
-    for i in range(0,nVals):
-      envs.append(make_env(game.env_name))
-    
+    # envs = list()
+    # for i in range(0,nVals):
+    #   envs.append(make_env(game.env_name))
     for iRep in range(nRep):
       for iVal in range(nVals):
         wMat = self.setWeights(wVec,wVals[iVal])
+        if view == False:
+            tmp1[iRep,iVal] = self.testInd(wMat, aVec, game, folder = None, view=view, seed=4)
+        else:
+          seed = np.random.randint(1, 1000000000)
+          tmp1[iRep,iVal] = self.testInd(wMat, aVec, game, folder = str(iRep)+"_"+str(iVal), view=view, seed = seed)
+        if view == False:
+            tmp2[iRep,iVal] = self.testInd(wMat, aVec, game, folder = None, view=view, seed=72456)
+        else:
+          seed = np.random.randint(1, 1000000000)
+          tmp2[iRep,iVal] = self.testInd(wMat, aVec, game, folder = str(iRep)+"_"+str(iVal), view=view, seed =seed)
+
+        reward[iRep,iVal] = (tmp1[iRep,iVal] + tmp2[iRep,iVal])/2
         # if seed == -1:
-        #   reward[iRep,iVal] = self.testInd(wMat, aVec, seed=seed,view=view)
+        #   if view == False:
+        #     reward[iRep,iVal] = self.testInd(wMat, aVec, game, folder = None, view=view, seed=seed)
+        #   else:
+        #     reward[iRep,iVal] = self.testInd(wMat, aVec, game, folder = str(iRep)+"_"+str(iVal), view=view, seed=seed)
+        #     # reward[iRep,iVal] = self.testInd(wMat, aVec, game, env=envs[iVal], folder = str(iRep)+"_"+str(iVal), view=view, seed=seed)
         # else:
-        #   reward[iRep,iVal] = self.testInd(wMat, aVec, seed=seed+iRep,view=view)
-        reward[iRep,iVal] = self.testInd(wMat, aVec, game, env=envs[iVal], folder = str(iRep)+"_"+str(iVal), view=view)
-        envs[iVal].close()
+        #   if view == False:
+        #     reward[iRep,iVal] = self.testInd(wMat, aVec, game, folder = None, view=view, seed=seed + irep)
+        #   else:
+        #     reward[iRep,iVal] = self.testInd(wMat, aVec, game, folder = str(iRep)+"_"+str(iVal), view=view, seed=seed + irep)
+        # envs[iVal].close()
 
     if returnVals is True:
       return np.mean(reward,axis=0), wVals

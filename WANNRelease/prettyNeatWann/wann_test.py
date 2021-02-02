@@ -39,7 +39,7 @@ def main(argv):
   fitness, wVals = task.getFitness(wVec, aVec, hyp,
                                 nVals=nMean, nRep=nRep,\
                                 view=view,returnVals=True, game = games[hyp['task']])      
-  # task.close()
+  # task.cloe()
   print("[***]\tFitness:", fitness , '\n' + "[***]\tWeight Values:\t" , wVals) 
   lsave(outPref+'reward.out',fitness)
   lsave(outPref+'wVals.out',wVals)

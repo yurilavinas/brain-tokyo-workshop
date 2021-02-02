@@ -10,6 +10,7 @@
     "popSize": 128,
     "prob_crossover": 0.0,
     "prob_mutAct":  0.50,
+    "prob_mutConn": 0.8,
     "prob_addNode": 0.25,
     "prob_addConn": 0.20,
     "prob_enable":  0.05,

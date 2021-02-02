@@ -1,5 +1,6 @@
 from collections import namedtuple
 import numpy as np
+import pybullet_envs
 
 Game = namedtuple('Game', ['env_name', 'time_factor', 'actionSelect', 'body_size',
   'input_size', 'output_size', 'layers', 'i_act', 'h_act',
@@ -11,37 +12,38 @@ games = {}
 # -- Car Racing  --------------------------------------------------------- -- #
 
 # > 32 latent vectors (includes past frames)
-# vae_racing_stack = Game(env_name='VAERacingStack-v0',
-#   actionSelect='all', # all, soft, hard
-#   input_size=32,
-#   output_size=3,
-#   time_factor=0,
-#   layers=[10, 0],
-#   i_act=np.full(32,1),
-#   h_act=[1,2,3,4,5,6,7,8,9,10],
-#   o_act=np.full(3,1),
-#   weightCap = 2.0,
-#   noise_bias=0.0,
-#   max_episode_length = 500,
-#   output_noise=[False, False, False],
-#   in_out_labels = ['latent01','latent02','latent03','latent04','latent05',\
-#                    'latent06','latent07','latent08','latent09','latent10',\
-#                    'latent11','latent12','latent13','latent14','latent15',\
-#                    'latent16','latent17','latent18','latent19','latent20',\
-#                    'latent21','latent22','latent23','latent24','latent25',\
-#                    'latent26','latent27','latent28','latent29','latent30',\
-#                    'latent31','latent32','steer'   ,'gas'     ,'brakes']
-# )
-# # gam・es['vae_racing_stack'] = vae_racing_stack
+vae_racing_stack = Game(env_name='VAERacingStack-v0',
+  actionSelect='all', # all, soft, hard
+  input_size=32,
+  output_size=3,
+  time_factor=0,
+  body_size=8,
+  layers=[10, 0],
+  i_act=np.full(32,1),
+  h_act=[1,2,3,4,5,6,7,8,9,10],
+  o_act=np.full(3,1),
+  weightCap = 2.0,
+  noise_bias=0.0,
+  max_episode_length = 500,
+  output_noise=[False, False, False],
+  in_out_labels = ['latent01','latent02','latent03','latent04','latent05',\
+                   'latent06','latent07','latent08','latent09','latent10',\
+                   'latent11','latent12','latent13','latent14','latent15',\
+                   'latent16','latent17','latent18','latent19','latent20',\
+                   'latent21','latent22','latent23','latent24','latent25',\
+                   'latent26','latent27','latent28','latent29','latent30',\
+                   'latent31','latent32','steer'   ,'gas'     ,'brakes']
+)
+games['vae_racing_stack'] = vae_racing_stack
 
-# # > 16 latent vectors (current frame only)
-# vae_racing = vae_racing_stack._replace(\
-#   env_name='VAERacing-v0', input_size=16, i_act=np.full(16,1),\
-#     in_out_labels = ['latent01','latent02','latent03','latent04','latent05',\
-#                      'latent06','latent07','latent08','latent09','latent10',\
-#                      'latent11','latent12','latent13','latent14','latent15',\
-#                      'latent16','steer'   ,'gas'     ,'brakes']  )
-# games['vae_racing'] = vae_racing
+# > 16 latent vectors (current frame only)
+vae_racing = vae_racing_stack._replace(\
+  env_name='VAERacing-v0', input_size=16, i_act=np.full(16,1),\
+    in_out_labels = ['latent01','latent02','latent03','latent04','latent05',\
+                     'latent06','latent07','latent08','latent09','latent10',\
+                     'latent11','latent12','latent13','latent14','latent15',\
+                     'latent16','steer'   ,'gas'     ,'brakes']  )
+games['vae_racing'] = vae_racing
 
 
 # -- Digit Classification ------------------------------------------------ -- #
@@ -90,30 +92,30 @@ games = {}
 
 # -- Cart-pole Swingup --------------------------------------------------- -- #
 
-# # > Slower reaction speed
-# cartpole_swingup = Game(env_name='CartPoleSwingUp_Hard',
-#   actionSelect='all', # all, soft, hard
-#   input_size=5,
-#   body_size=8,
-#   output_size=1,
-#   time_factor=0,
-#   layers=[5, 5],
-#   i_act=np.full(5,1),
-#   h_act=[1,2,3,4,5,6,7,8,9,10],
-#   o_act=np.full(1,1),
-#   weightCap = 2.0,
-#   noise_bias=0.0,
-#   output_noise=[False, False, False],
-#   max_episode_length = 200,
-#   in_out_labels = ['x','x_dot','cos(theta)','sin(theta)','theta_dot',
-#                    'force']
-# )
-# # games['swingup_hard'] = cartpole_swingup
+# > Slower reaction speed
+cartpole_swingup = Game(env_name='CartPoleSwingUp_Hard',
+  actionSelect='all', # all, soft, hard
+  input_size=5,
+  output_size=1,
+  body_size=8,
+  time_factor=0,
+  layers=[5, 5],
+  i_act=np.full(5,1),
+  h_act=[1,2,3,4,5,6,7,8,9,10],
+  o_act=np.full(1,1),
+  weightCap = 2.0,
+  noise_bias=0.0,
+  output_noise=[False, False, False],
+  max_episode_length = 200,
+  in_out_labels = ['x','x_dot','cos(theta)','sin(theta)','theta_dot',
+                   'force']
+)
+games['swingup_hard'] = cartpole_swingup
 
-# # > Normal reaction speed
-# cartpole_swingup = cartpole_swingup._replace(\
-#     env_name='CartPoleSwingUp', max_episode_length=1000)
-# # games['swingup'] = cartpole_swingup
+# > Normal reaction speed
+cartpole_swingup = cartpole_swingup._replace(\
+    env_name='CartPoleSwingUp', max_episode_length=1000)
+games['swingup'] = cartpole_swingup
 
 
 # -- Bipedal Walker ------------------------------------------------------ -- #
@@ -180,21 +182,21 @@ games['AugmentBipedalWalkerHardcore'] = augmentbipedhard
 
 # -- Bullet -------------------------------------------------------------- -- #
 
-# # > Quadruped ant
-# bullet_ant = Game(env_name='AntBulletEnv-v0',
-#   actionSelect='all', # all, soft, hard
-#   input_size=28,
-#   output_size=8,
-#   layers=[64, 32],
-#   time_factor=1000,
-#   i_act=np.full(28,1),
-#   h_act=[1,2,3,4,5,6,7,8,9,10],
-#   o_act=np.full(8,1),
-#   weightCap = 2.0,
-#   noise_bias=0.0,
-#   output_noise=[False, False, True],
-#   max_episode_length = 1000,
-#   in_out_labels = []
-# )
-# games['bullet_ant'] = bullet_ant
-
+# > Quadruped ant
+bullet_ant = Game(env_name='AntBulletEnv-v0',
+  actionSelect='all', # all, soft, hard
+  input_size=28,
+  output_size=8,
+  body_size=8,
+  layers=[64, 32],
+  time_factor=1000,
+  i_act=np.full(28,1),
+  h_act=[1,2,3,4,5,6,7,8,9,10],
+  o_act=np.full(8,1),
+  weightCap = 2.0,
+  noise_bias=0.0,
+  output_noise=[False, False, True],
+  max_episode_length = 1000,
+  in_out_labels = []
+)
+games['bullet_ant'] = bullet_ant
