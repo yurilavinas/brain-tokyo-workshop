@@ -166,7 +166,7 @@ class BipedalWalker(gym.Env):
 
     def _generate_terrain(self, hardcore):
         # GRASS, STUMP, STAIRS, PIT, _STATES_ = range(5)
-        GRASS, STUMP, STAIRS, _STATES_ = range(3)
+        GRASS, STAIRS, _STATES_ = range(3)
         state    = GRASS
         velocity = 0.0
         y        = TERRAIN_HEIGHT
