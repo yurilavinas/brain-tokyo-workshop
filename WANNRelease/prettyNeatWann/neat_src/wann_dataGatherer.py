@@ -111,8 +111,6 @@ class WannDataGatherer():
       #e.g.         self.    fit_max          [:,None]
       evalString = 'self.' + gStatLabel[i] + '[:,None]'
       genStats = np.hstack((genStats, eval(evalString)))
-    print('genStats')
-    print(genStats)
     lsave(pref + '_stats.out', genStats)
     # ------------------------------------------------------------------------ 
 
