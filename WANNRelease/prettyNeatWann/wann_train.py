@@ -43,10 +43,10 @@ def master():
     reward = batchMpiEval(pop)  # Send pop to be evaluated by workers
     alg.tell(reward)           # Send fitness to NEAT    
     pop[0].gen = gen
+
     data = gatherData(data,alg,gen,init,hyp)
     print(gen, '\t', data.display())
-    data.save()
-    exit()
+
   # attrs = vars(pop[0])
   # print(', '.join("%s: %s" % item for item in attrs.items())) 
 
@@ -247,7 +247,7 @@ def mpi_fork(n):
       OMP_NUM_THREADS="1",
       IN_MPI="1"
     )
-    print( ["/usr/lib64/openmpi/bin/mpirun ", "-np", str(n), sys.executable] + sys.argv)
+    # print( ["/usr/lib64/openmpi/bin/mpirun ", "-np", str(n), sys.executable] + sys.argv)
     subprocess.check_call(["/usr/lib64/openmpi/bin/mpirun", "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
     return "parent"
   else:

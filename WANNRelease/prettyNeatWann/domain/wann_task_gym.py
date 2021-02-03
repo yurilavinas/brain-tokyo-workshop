@@ -91,14 +91,13 @@ class WannGymTask(GymTask):
         wMat = self.setWeights(wVec,wVals[iVal])
         if view == False:
             tmp1[iRep,iVal] = self.testInd(wMat, aVec, game, folder = None, view=view, seed=4)
-        else:
-          seed = np.random.randint(1, 1000000000)
-          tmp1[iRep,iVal] = self.testInd(wMat, aVec, game, folder = str(iRep)+"_"+str(iVal), view=view, seed = seed)
-        if view == False:
             tmp2[iRep,iVal] = self.testInd(wMat, aVec, game, folder = None, view=view, seed=72456)
         else:
           seed = np.random.randint(1, 1000000000)
+          tmp1[iRep,iVal] = self.testInd(wMat, aVec, game, folder = str(iRep)+"_"+str(iVal), view=view, seed = seed)
+          seed = np.random.randint(1, 1000000000)
           tmp2[iRep,iVal] = self.testInd(wMat, aVec, game, folder = str(iRep)+"_"+str(iVal), view=view, seed =seed)
+          
 
         reward[iRep,iVal] = (tmp1[iRep,iVal] + tmp2[iRep,iVal])/2
         # if seed == -1:
