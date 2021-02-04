@@ -89,13 +89,15 @@ class WannGymTask(GymTask):
     for iRep in range(nRep):
       for iVal in range(nVals):
         wMat = self.setWeights(wVec,wVals[iVal])
-        if view == False:
-            tmp1[iRep,iVal] = self.testInd(wMat, aVec, game, folder = None, view=view, seed=4)
-            tmp2[iRep,iVal] = self.testInd(wMat, aVec, game, folder = None, view=view, seed=72456)
-            reward[iRep,iVal] = (tmp1[iRep,iVal] + tmp2[iRep,iVal])/2
-        else:
-          seed = np.random.randint(1, 1000000000)
-          reward[iRep,iVal] = self.testInd(wMat, aVec, game, folder = str(iRep)+"_"+str(iVal), view=view, seed = seed)
+        # if view == False:
+            # tmp1[iRep,iVal] = self.testInd(wMat, aVec, game, folder = None, view=view, seed=4)
+            # tmp2[iRep,iVal] = self.testInd(wMat, aVec, game, folder = None, view=view, seed=72456)
+            # reward[iRep,iVal] = (tmp1[iRep,iVal] + tmp2[iRep,iVal])/2
+        seed = np.random.randint(1, 1000000000)
+        reward[iRep,iVal] = self.testInd(wMat, aVec, game, folder = str(iRep)+"_"+str(iVal), view=False, seed = seed)
+        # else:
+        #   seed = np.random.randint(1, 1000000000)
+        #   reward[iRep,iVal] = self.testInd(wMat, aVec, game, folder = str(iRep)+"_"+str(iVal), view=view, seed = seed)
 
         
         # if seed == -1:
