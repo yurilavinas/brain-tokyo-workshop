@@ -49,7 +49,7 @@ class WannDataGatherer():
 
     
     # --- Best Individual ----------------------------------------------------
-    if p['alg_selection'] == "var":
+    if p['alg_selection'] != "mean":
       self.elite.append(pop[np.argmax(var)])
       if len(self.best) == 0:
         self.best = copy.deepcopy(self.elite)
