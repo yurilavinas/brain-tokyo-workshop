@@ -102,11 +102,11 @@ class GymTask():
     action = selectAct(annOut,self.actSelect)    
     state, reward, done, info = env.step(action)
     if self.maxEpisodeLength == 0:
-      if view:
+      # if view:
         # if self.needsClosed:
         #   env.render(close=done)  
         # else:
-          env.render()
+          # env.render()
       return reward
     else:
       totalReward = reward
@@ -115,11 +115,11 @@ class GymTask():
       action = selectAct(annOut,self.actSelect) 
       state, reward, done, info = env.step(action)
       totalReward += reward  
-      if view:
+      # if view:
         # if self.needsClosed:
         #   env.render(close=done)  
         # else:
-          env.render()
+          # env.render()
       if done:
         break
 
