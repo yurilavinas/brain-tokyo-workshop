@@ -53,6 +53,7 @@ class Wann(Neat):
       """Rank population according to Pareto dominance.
       """
       # Compile objectives
+      print("wann sel.")
       meanFit = np.asarray([ind.fitness for ind in self.pop])
       maxFit  = np.asarray([ind.fitMax  for ind in self.pop])
       nConns  = np.asarray([ind.nConn   for ind in self.pop])

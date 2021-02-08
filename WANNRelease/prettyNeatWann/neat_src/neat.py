@@ -127,6 +127,7 @@ class Neat():
     """Rank population according to Pareto dominance.
     """
     # Compile objectives
+    print("neat sel.")
     meanFit = np.asarray([ind.fitness for ind in self.pop])
     nConns  = np.asarray([ind.nConn   for ind in self.pop])
     nConns[nConns==0] = 1 # No connections is pareto optimal but boring...
