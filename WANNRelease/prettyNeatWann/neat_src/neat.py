@@ -127,7 +127,6 @@ class Neat():
     """Rank population according to Pareto dominance.
     """
     # Compile objectives
-    print("neat sel.")
     meanFit = np.asarray([ind.fitness for ind in self.pop])
     nConns  = np.asarray([ind.nConn   for ind in self.pop])
     nConns[nConns==0] = 1 # No connections is pareto optimal but boring...
@@ -221,7 +220,7 @@ def updateHyp(hyp,pFileName=None):
   """Overwrites default hyperparameters with those from second .json file
   """
   if pFileName != None:
-    print('\t*** Running with hyperparameters: ', pFileName, '\t***')
+    # print('\t*** Running with hyperparameters: ', pFileName, '\t***')
     with open(pFileName) as data_file: update = json.load(data_file)
     hyp.update(update)
 

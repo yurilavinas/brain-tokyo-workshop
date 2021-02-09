@@ -62,7 +62,7 @@ TERRAIN_STEP   = 14/SCALE
 TERRAIN_LENGTH = 200     # in steps
 TERRAIN_HEIGHT = VIEWPORT_H/SCALE/4
 TERRAIN_GRASS    = 10    # low long are grass spots, in steps
-TERRAIN_STARTPAD = 20    # in steps
+TERRAIN_STARTPAD = 20+20    # in steps
 FRICTION = 2.5
 
 BIPED_LIMIT = 1600
@@ -184,6 +184,20 @@ class BipedalWalker(gym.Env):
                 if i > TERRAIN_STARTPAD: velocity += self.np_random.uniform(-1, 1)/SCALE   #1
                 y += velocity
 
+                # if i == 0:
+                #     # counter = 1#self.np_random.randint(1, 3)
+                #     poly = [
+                #         (x+1,                      y+1.46),#dir, SUP
+                #         (x+TERRAIN_STEP, y), #ESQ, inf
+                #         (x+TERRAIN_STEP, y+TERRAIN_STEP+1), #seq, sup
+                #         (x+1,                      y+TERRAIN_STEP-0.46), #dir, inf
+                #         ]
+                #     self.fd_polygon.shape.vertices=poly
+                #     t = self.world.CreateStaticBody(
+                #         fixtures = self.fd_polygon)
+                #     t.color1, t.color2 = (1,1,1), (0.6,0.6,0.6)
+                #     self.terrain.append(t)
+
             # elif state==PIT and oneshot:
             #     counter = self.np_random.randint(3, 5)
             #     poly = [
@@ -212,6 +226,7 @@ class BipedalWalker(gym.Env):
             #     y = original_y
             #     if counter > 1:
             #         y -= 4*TERRAIN_STEP
+
 
             # elif state==STUMP and oneshot:
             #     counter = self.np_random.randint(1, 3)
@@ -451,6 +466,8 @@ class BipedalWalker(gym.Env):
 
         self.scroll = pos.x - VIEWPORT_W/SCALE/5
 
+
+
         shaping  = 130*pos[0]/SCALE   # moving forward is a way to receive reward (normalized to get 300 on completion)
         # shaping -= 5.0*abs(state[0])  # keep head straight, other than that and falling, any behavior is unpunished
 
@@ -470,6 +487,9 @@ class BipedalWalker(gym.Env):
             done   = True
         if pos[0] > (TERRAIN_LENGTH-TERRAIN_GRASS)*TERRAIN_STEP:
             done   = True
+
+        if pos.y <= 0:
+            done = True
 
         if self.hardcore:
           if self.timer >= BIPED_HARDCORE_LIMIT:
