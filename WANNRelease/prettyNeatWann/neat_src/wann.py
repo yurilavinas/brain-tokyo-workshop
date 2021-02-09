@@ -44,7 +44,7 @@ class Wann(Neat):
     for i in range(np.shape(reward)[0]):
       self.pop[i].fitness = np.mean(reward[i,:])
       self.pop[i].mean = np.mean(reward[i,:])
-      self.pop[i].var = np.var(np.clip(reward[i,:], 0, max(reward[i,:])))
+      self.pop[i].var = np.sum(np.clip(reward[i,:], 0, max(reward[i,:])))
       self.pop[i].fitMax  = np.max( reward[i,:])
       self.pop[i].nConn   = self.pop[i].nConn
       self.pop[i].rewards   = reward

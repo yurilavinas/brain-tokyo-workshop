@@ -93,7 +93,7 @@ class WannGymTask(GymTask):
         if view == False:
           values[0] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=4))
           values[1] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=72456))
-          reward[iRep,iVal] = np.sum(values)
+          reward[iRep,iVal] = np.var(values)
         else:
           seed = np.random.randint(1, 1000000000)
           reward[iRep,iVal] = self.testInd(wMat, aVec, game, folder = str(iRep)+"_"+str(iVal), view=view, seed = seed)
