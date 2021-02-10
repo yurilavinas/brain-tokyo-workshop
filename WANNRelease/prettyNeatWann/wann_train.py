@@ -27,21 +27,22 @@ def master():
   data = WannDataGatherer(filename, hyp)
   alg  = Wann(hyp)
 
-  # checkpoint - begin
+  # # checkpoint - begin
   init = 0
-  pref = 'log/' + fileName + '_pop/'
-  if os.path.exists(pref):
-    print("loading pop. data from file...")
-    pop = alg.initPop()
-    import pickle
-    with open(pref+'_pop.checkpoint', 'rb') as fp:
-      pop = pickle.load(fp)
-    init = pop[0].gen + 1
+  # pref = 'log/' + fileName + '_pop/'
+  # if os.path.exists(pref):
+  #   print("loading pop. data from file...")
+  #   pop = alg.initPop()
+  #   import pickle
+  #   with open(pref+'_pop.checkpoint', 'rb') as fp:
+  #     pop = pickle.load(fp)
+  #   init = pop[0].gen + 1
 
   for gen in range(init,hyp['maxGen']): 
     pop = alg.ask(init)            # Get newly evolved individuals from NEAT 
     reward = batchMpiEval(pop)  # Send pop to be evaluated by workers
     alg.tell(reward)           # Send fitness to NEAT    
+    
     pop[0].gen = gen
 
     data = gatherData(data,alg,gen,init,hyp)
@@ -148,12 +149,14 @@ def batchMpiEval(pop, sameSeedForEachIndividual=True):
   nBatch= math.ceil(nJobs/nSlave) # First worker is master
 
     # Set same seed for each individual
-  if sameSeedForEachIndividual is False:
+  if sameSeedForEachIndividual == False:
     seed = np.random.randint(1000, size=nJobs)
   else:
     seed = np.random.randint(1000)
-
-  reward = np.empty( (nJobs,hyp['alg_nVals']), dtype=np.float64)
+  if hyp['alg_selection'] != "mean":
+    reward = np.empty((nJobs,hyp['alg_nVals']*2), dtype=np.float64)
+  else:
+    reward = np.empty((nJobs,hyp['alg_nVals']), dtype=np.float64)
   i = 0 # Index of fitness we are filling
   for iBatch in range(nBatch): # Send one batch of individuals
     for iWork in range(nSlave): # (one to each worker if there)
@@ -170,7 +173,7 @@ def batchMpiEval(pop, sameSeedForEachIndividual=True):
         if sameSeedForEachIndividual is False:
           comm.send(seed.item(i), dest=(iWork)+1, tag=5)
         else:
-          comm.send(  seed, dest=(iWork)+1, tag=5)        
+          comm.send(seed, dest=(iWork)+1, tag=5)        
 
       else: # message size of 0 is signal to shutdown workers
         n_wVec = 0
@@ -181,7 +184,10 @@ def batchMpiEval(pop, sameSeedForEachIndividual=True):
     i -= nSlave
     for iWork in range(1,nSlave+1):
       if i < nJobs:
-        workResult = np.empty(hyp['alg_nVals'], dtype='d')
+        if hyp['alg_selection'] != "mean":
+          workResult = np.empty(hyp['alg_nVals']*2, dtype='d')
+        else:
+          workResult = np.empty(hyp['alg_nVals'], dtype='d')
         comm.Recv(workResult, source=iWork)
         reward[i,:] = workResult
       i+=1
@@ -217,8 +223,12 @@ def slave():
       comm.Recv(aVec, source=0,  tag=4) # recieve it
       seed = comm.recv(source=0, tag=5) # random seed as int
 
-      result = task.getFitness(wVec,aVec,hyp, games[hyp['task']]) # process it
-      comm.Send(result, dest=0)            # send it back
+      if hyp['alg_selection'] != "mean":
+        result = task.getFitness(wVec,aVec,hyp, games[hyp['task']], seed = 4) # process it
+        comm.Send(result, dest=0)            # send it back
+      else:
+        result = task.getFitness(wVec,aVec,hyp, games[hyp['task']]) # process it
+        comm.Send(result, dest=0)            # send it back
 
     if n_wVec < 0: # End signal recieved
       print('Worker # ', rank, ' shutting down.')

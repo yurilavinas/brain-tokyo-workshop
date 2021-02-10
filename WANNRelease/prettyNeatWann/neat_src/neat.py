@@ -31,6 +31,7 @@ class Neat():
     """
     self.p       = hyp
     self.pop     = [] 
+    self.archive     = [] 
     self.species = [] 
     self.innov   = [] 
     self.gen     = 0  
@@ -55,7 +56,8 @@ class Neat():
       elif p['alg_selection'] == "dist":
         self.selStats() 
       elif p['alg_selection'] == "var_multi":
-        self.selFailureMulti()      
+        self.selFailureMulti() 
+        self.archive = copy.deepcopy(self.pop)
       elif p['alg_selection'] == "var":
         self.selFailure()
       self.speciate()     # Divide population into species
@@ -151,10 +153,14 @@ class Neat():
     varFit = np.asarray([ind.var for ind in self.pop])
     nConns  = np.asarray([ind.nConn   for ind in self.pop])
 
-    nConns[nConns==0] = 1 # No conns is always pareto optimal (but boring)
-    objVals = np.c_[meanFit,varFit,1/nConns] # Maximize
+    # if(len(self.archive)>0):
+    novelty = [sparseness(self.archive, self.pop, ind.nConn) for ind in self.pop]
 
-    rank = nsga_sort(objVals)  
+    self.archive.append(self.pop[np.argmax(novelty)])
+    nConns[nConns==0] = 1 # No conns is always pareto optimal (but boring)
+    objVals = np.c_[novelty,varFit,1/nConns] # Maximize
+    
+    rank = nsga_sort(objVals)
 
     # Assign ranks
     for i in range(len(self.pop)):
@@ -166,24 +172,24 @@ class Neat():
     for i in range(len(self.pop)):
       self.pop[i].rank = rank[i]
  
-  def selStats(self):
+  # def selStats(self):
 
-    fitness = [ind.fitness for ind in self.pop]
-    elite = self.pop[np.argmax(fitness)]
+  #   fitness = [ind.fitness for ind in self.pop]
+  #   elite = self.pop[np.argmax(fitness)]
 
-    p_values = list()
-    max_value = float('-inf')
-    for i in range(len(self.pop)):
-        fitMax  = np.mean(self.pop[i].rewards)
-        if (max_value < fitMax):
-          max_value = fitMax
-          j = i
-    for i in range(len(self.pop)):
-      __, p_value = stats.ttest_ind(self.pop[i].rewards, elite.rewards, equal_var = True)  
-      p_values.append(p_value)
-    rank = np.argsort(p_values)
-    for i in range(len(self.pop)):
-      self.pop[i].rank = rank[i]
+  #   p_values = list()
+  #   max_value = float('-inf')
+  #   for i in range(len(self.pop)):
+  #       fitMax  = np.mean(self.pop[i].rewards)
+  #       if (max_value < fitMax):
+  #         max_value = fitMax
+  #         j = i
+  #   for i in range(len(self.pop)):
+  #     __, p_value = stats.ttest_ind(self.pop[i].rewards, elite.rewards, equal_var = True)  
+  #     p_values.append(p_value)
+  #   rank = np.argsort(p_values)
+  #   for i in range(len(self.pop)):
+  #     self.pop[i].rank = rank[i]
 
       
 def loadHyp(pFileName, printHyp=False):

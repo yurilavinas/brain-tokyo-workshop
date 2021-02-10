@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 
 def roulette(pArr):
   """Returns random index, with each choices chance weighted
@@ -64,7 +65,7 @@ def bestIntSplit(ratio, total):
       intSplit   - [1 x N ] - Number in each pile
   """
   # Handle poorly defined ratio
-  if sum(ratio) is not 1:
+  if sum(ratio) != 1:
     ratio = np.asarray(ratio)/sum(ratio)
   
   # Get share in real and integer values
@@ -93,7 +94,7 @@ def quickINTersect(A,B):
     print(quickINTersect(B,C))
     print(quickINTersect(B,D))
   """
-  if (len(A) is 0) or (len(B) is 0):
+  if (len(A) == 0) or (len(B) == 0):
     return [],[]
   P = np.zeros((1+max(max(A),max(B))),dtype=bool)
   P[A] = True
@@ -103,3 +104,43 @@ def quickINTersect(A,B):
   IA = P[A]
 
   return IA, IB
+
+def distance(p1, p2):
+  '''
+  Returns the L2 distance between points p1 and p2 which are assumed to
+  be lists or tuples of equal length.
+  code from: https://github.com/simondlevy/neat-gym/blob/179d89a5deb696f5a19ef5885494fd80ae4c285f/neat_gym/novelty/__init__.py
+  '''
+
+  return np.sqrt(np.sum((np.array(p1)-np.array(p2))**2))
+
+def sparseness(archive, pop, ind, k = 5):
+  '''
+  Novelty Search - What is the behaviour that I want to be be novel?
+  Returns the sparseness of the given point p as defined by equation 1 on
+  page 13 of Lehman & Stanley 2011. Recall that sparseness is a measure
+  of how unique this point is relative to the archive of saved examples.
+  '''
+
+  ind = np.asarray(ind)
+
+  nbrs1 = np.argsort([distance(ind, np.asarray(ind_archive.nConn)) for ind_archive in archive])[:k]
+  nbrs2 = np.argsort([distance(ind, np.asarray(ind_pop.nConn)) for ind_pop in pop])[:k]
+  
+  tmp = []
+  for i in nbrs1:
+    tmp.append(copy.deepcopy(archive[i]))
+
+  for i in nbrs2:
+    tmp.append(copy.deepcopy(pop[i]))
+
+  dst = np.sum([distance(ind, np.asarray(ind_archive.nConn)) for ind_archive in tmp])/k
+
+  return dst
+
+
+
+
+
+
+

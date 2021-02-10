@@ -41,13 +41,30 @@ class Wann(Neat):
                [nInd X nTrails]
 
     """
-    for i in range(np.shape(reward)[0]):
-      self.pop[i].fitness = np.mean(reward[i,:])
-      self.pop[i].mean = np.mean(reward[i,:])
-      self.pop[i].var = np.sum(np.clip(reward[i,:], 0, max(reward[i,:])))
-      self.pop[i].fitMax  = np.max( reward[i,:])
-      self.pop[i].nConn   = self.pop[i].nConn
-      self.pop[i].rewards   = reward
+
+    p = self.p
+
+    if p['alg_selection'] != "mean":
+      for i in range(np.shape(reward)[0]):
+        
+        reward1 = reward[i][0:8]
+        reward2 = reward[i][8:16]
+
+        self.pop[i].fitness = (reward1 + reward2)/2
+        clip_r1 = np.var(np.clip(reward1, 0, max(reward1)))
+        clip_r2 = np.var(np.clip(reward2, 0, max(reward2)))
+        self.pop[i].var = clip_r1 + clip_r2
+        self.pop[i].fitMax  = max(clip_r1, clip_r2)
+        self.pop[i].nConn   = self.pop[i].nConn
+        self.pop[i].rewards   = reward1
+    else:
+      for i in range(np.shape(reward)[0]):
+        self.pop[i].fitness = np.mean(reward[i,:])
+        self.pop[i].mean = np.mean(reward[i,:])
+        self.pop[i].var = np.var(np.clip(reward[i,:], 0, max(reward[i,:])))
+        self.pop[i].fitMax  = np.max(reward[i,:])
+        self.pop[i].nConn   = self.pop[i].nConn
+        self.pop[i].rewards   = reward1
 
   def probMoo(self):
       """Rank population according to Pareto dominance.
@@ -66,3 +83,4 @@ class Wann(Neat):
       # Assign ranks
       for i in range(len(self.pop)):
         self.pop[i].rank = rank[i]
+
