@@ -4,6 +4,6 @@
     "maxGen": 20,
     "popSize": 10,
     "prob_initEnable": 0.25,
-    "select_tournSize": 2,
+    "select_tournSize": 16,
     "alg_selection": "var"	
 }

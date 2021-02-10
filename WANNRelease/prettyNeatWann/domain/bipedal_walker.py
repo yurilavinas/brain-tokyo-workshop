@@ -46,7 +46,7 @@ SPEED_HIP     = 4
 SPEED_KNEE    = 6
 LIDAR_RANGE   = 160/SCALE
 
-INITIAL_RANDOM = 5
+INITIAL_RANDOM = 1000
 
 HULL_POLY =[
     (-30,+9), (+6,+9), (+34,+1),
@@ -184,19 +184,19 @@ class BipedalWalker(gym.Env):
                 if i > TERRAIN_STARTPAD: velocity += self.np_random.uniform(-1, 1)/SCALE   #1
                 y += velocity
 
-                # if i == 0:
-                #     # counter = 1#self.np_random.randint(1, 3)
-                #     poly = [
-                #         (x+1,                      y+1.46),#dir, SUP
-                #         (x+TERRAIN_STEP, y), #ESQ, inf
-                #         (x+TERRAIN_STEP, y+TERRAIN_STEP+1), #seq, sup
-                #         (x+1,                      y+TERRAIN_STEP-0.46), #dir, inf
-                #         ]
-                #     self.fd_polygon.shape.vertices=poly
-                #     t = self.world.CreateStaticBody(
-                #         fixtures = self.fd_polygon)
-                #     t.color1, t.color2 = (1,1,1), (0.6,0.6,0.6)
-                #     self.terrain.append(t)
+                if i == 0:
+                    # counter = 1#self.np_random.randint(1, 3)
+                    poly = [
+                        (x+1,                      y+1.46),#dir, SUP
+                        (x+TERRAIN_STEP, y), #ESQ, inf
+                        (x+TERRAIN_STEP, y+TERRAIN_STEP+1), #seq, sup
+                        (x+1,                      y+TERRAIN_STEP-0.46), #dir, inf
+                        ]
+                    self.fd_polygon.shape.vertices=poly
+                    t = self.world.CreateStaticBody(
+                        fixtures = self.fd_polygon)
+                    t.color1, t.color2 = (1,1,1), (0.6,0.6,0.6)
+                    self.terrain.append(t)
 
             # elif state==PIT and oneshot:
             #     counter = self.np_random.randint(3, 5)

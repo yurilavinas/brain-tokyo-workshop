@@ -27,29 +27,30 @@ def master():
   data = WannDataGatherer(filename, hyp)
   alg  = Wann(hyp)
 
-  # # checkpoint - begin
+  # checkpoint - begin
   init = 0
-  # pref = 'log/' + fileName + '_pop/'
-  # if os.path.exists(pref):
-  #   print("loading pop. data from file...")
-  #   pop = alg.initPop()
-  #   import pickle
-  #   with open(pref+'_pop.checkpoint', 'rb') as fp:
-  #     pop = pickle.load(fp)
-  #   init = pop[0].gen + 1
+  pref = 'log/' + fileName + '_pop/'
+  if os.path.exists(pref):
+    print("loading pop. data from file...")
+    pop = alg.initPop()
+    import pickle
+    with open(pref+'_pop.checkpoint', 'rb') as fp:
+      pop = pickle.load(fp)
+    init = pop[0].gen + 1
 
   for gen in range(init,hyp['maxGen']): 
     pop = alg.ask(init)            # Get newly evolved individuals from NEAT 
     reward = batchMpiEval(pop)  # Send pop to be evaluated by workers
     alg.tell(reward)           # Send fitness to NEAT    
     
-    pop[0].gen = gen
+    # attrs = vars(pop[0])
+    # print(', '.join("%s: %s" % item for item in attrs.items())) 
 
     data = gatherData(data,alg,gen,init,hyp)
     print(gen, '\t', data.display())
 
-  # attrs = vars(pop[0])
-  # print(', '.join("%s: %s" % item for item in attrs.items())) 
+  attrs = vars(pop[0])
+  print(', '.join("%s: %s" % item for item in attrs.items())) 
 
   # Clean up and data gathering at run end
   data = gatherData(data,alg,gen,init,hyp,savePop=True)
