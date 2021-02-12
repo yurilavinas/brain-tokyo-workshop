@@ -67,7 +67,7 @@ class Wann(Neat):
         self.pop[i].fitMax  = np.max(reward[i,:])
         self.pop[i].nConn   = self.pop[i].nConn
         self.pop[i].rewards   = reward
-    exit()
+
   def probMoo(self):
       """Rank population according to Pareto dominance.
       """
