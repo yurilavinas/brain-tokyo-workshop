@@ -46,7 +46,7 @@ SPEED_HIP     = 4
 SPEED_KNEE    = 6
 LIDAR_RANGE   = 160/SCALE
 
-INITIAL_RANDOM = 1000
+INITIAL_RANDOM = 5
 
 HULL_POLY =[
     (-30,+9), (+6,+9), (+34,+1),
@@ -465,8 +465,6 @@ class BipedalWalker(gym.Env):
         assert len(state)==24
 
         self.scroll = pos.x - VIEWPORT_W/SCALE/5
-
-
 
         shaping  = 130*pos[0]/SCALE   # moving forward is a way to receive reward (normalized to get 300 on completion)
         # shaping -= 5.0*abs(state[0])  # keep head straight, other than that and falling, any behavior is unpunished

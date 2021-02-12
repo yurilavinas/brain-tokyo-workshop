@@ -49,9 +49,6 @@ def master():
     data = gatherData(data,alg,gen,init,hyp)
     print(gen, '\t', data.display())
 
-  attrs = vars(pop[0])
-  print(', '.join("%s: %s" % item for item in attrs.items())) 
-
   # Clean up and data gathering at run end
   data = gatherData(data,alg,gen,init,hyp,savePop=True)
   data.save()

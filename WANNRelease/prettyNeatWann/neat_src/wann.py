@@ -48,18 +48,17 @@ class Wann(Neat):
 
 
       for i in range(np.shape(reward)[0]):
-        
+        reward[i] = np.clip(reward[i],0, max(reward[i]))
         reward1 = reward[i][0:8]
         reward2 = reward[i][8:16]
-
-        self.pop[i].fitness = np.mean(np.asarray((reward1 + reward2)/2))
-        self.pop[i].mean = np.mean(np.asarray((reward1 + reward2)/2))
-        clip_r1 = np.var(np.clip(reward1, 0, max(reward1)))
-        clip_r2 = np.var(np.clip(reward2, 0, max(reward2)))
-        self.pop[i].var = clip_r1 + clip_r2
-        self.pop[i].fitMax  = max(clip_r1, clip_r2)
+        var1 = np.var(reward1)
+        var2 = np.var(reward2)        
+        self.pop[i].fitness = np.mean(reward[i,:])
+        self.pop[i].mean = self.pop[i].fitness
+        self.pop[i].var = var1 + var2
+        self.pop[i].fitMax  = np.max(reward[i])
         self.pop[i].nConn   = self.pop[i].nConn
-        self.pop[i].rewards   = reward[:][0:8]
+        self.pop[i].rewards   = (reward1 + reward2)/2
     else:
       for i in range(np.shape(reward)[0]):
         self.pop[i].fitness = np.mean(reward[i,:])
@@ -68,7 +67,7 @@ class Wann(Neat):
         self.pop[i].fitMax  = np.max(reward[i,:])
         self.pop[i].nConn   = self.pop[i].nConn
         self.pop[i].rewards   = reward
-
+    exit()
   def probMoo(self):
       """Rank population according to Pareto dominance.
       """

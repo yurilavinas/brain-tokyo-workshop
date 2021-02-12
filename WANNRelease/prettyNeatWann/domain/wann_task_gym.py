@@ -91,7 +91,7 @@ class WannGymTask(GymTask):
       for iVal in range(nVals):
         wMat = self.setWeights(wVec,wVals[iVal])
         
-        # if seed == -1:
+        # if seed == -1 and view == True:
         #   seed = np.random.randint(1, 1000000000)
         #   reward[iRep,iVal] = self.testInd(wMat, aVec, game, folder = str(iRep)+"_"+str(iVal), view=view, seed = seed)
         # else:
@@ -115,7 +115,10 @@ class WannGymTask(GymTask):
 
 
     if hyp['alg_selection'] != "mean":
-      return np.concatenate([np.mean(reward,axis=0), np.mean(reward2,axis=0)])
+      if returnVals is True:
+        return np.concatenate([np.mean(reward,axis=0), np.mean(reward2,axis=0)]), wVals
+      else:
+        return np.concatenate([np.mean(reward,axis=0), np.mean(reward2,axis=0)])
     else:
       if returnVals is True:
         return np.mean(reward,axis=0), wVals

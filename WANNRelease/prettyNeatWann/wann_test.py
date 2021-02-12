@@ -39,8 +39,9 @@ def main(argv):
   fitness, wVals = task.getFitness(wVec, aVec, hyp,
                                 nVals=nMean, nRep=nRep,\
                                 view=view,returnVals=True, game = games[hyp['task']])      
-  # task.cloe()
+
   print("[***]\tFitness:", fitness , '\n' + "[***]\tWeight Values:\t" , wVals) 
+  print("[***]\tPeak Fit:", max(fitness) , '\n') 
   lsave(outPref+'reward.out',fitness)
   lsave(outPref+'wVals.out',wVals)
   
