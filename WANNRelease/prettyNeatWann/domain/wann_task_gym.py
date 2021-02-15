@@ -92,14 +92,19 @@ class WannGymTask(GymTask):
         wMat = self.setWeights(wVec,wVals[iVal])
         
         # if seed == -1 and view == True:
-        #   seed = np.random.randint(1, 1000000000)
+
         #   reward[iRep,iVal] = self.testInd(wMat, aVec, game, folder = str(iRep)+"_"+str(iVal), view=view, seed = seed)
         # else:
-        reward[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=4))
-        reward2[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=72456))
         
-
+        # reward2[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=seed))
         
+        if hyp['alg_selection'] == "var":
+          # print("entrou")
+          reward[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=4))
+          reward2[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=72456))
+        else:
+          # print("else")
+          reward[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=np.random.randint(1, 1000000000)))
         # if seed == -1:
         #   if view == False:
         #     reward[iRep,iVal] = self.testInd(wMat, aVec, game, folder = None, view=view, seed=seed)
@@ -114,7 +119,7 @@ class WannGymTask(GymTask):
         # envs[iVal].close()
 
 
-    if hyp['alg_selection'] != "mean":
+    if hyp['alg_selection'] == "var":
       if returnVals is True:
         return np.concatenate([np.mean(reward,axis=0), np.mean(reward2,axis=0)]), wVals
       else:

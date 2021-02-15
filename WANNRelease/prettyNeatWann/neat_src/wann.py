@@ -44,7 +44,7 @@ class Wann(Neat):
 
     p = self.p
 
-    if p['alg_selection'] != "mean":
+    if p['alg_selection'] == "var":
 
 
       for i in range(np.shape(reward)[0]):

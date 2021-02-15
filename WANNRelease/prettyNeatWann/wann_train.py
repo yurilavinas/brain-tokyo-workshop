@@ -151,7 +151,7 @@ def batchMpiEval(pop, sameSeedForEachIndividual=True):
     seed = np.random.randint(1000, size=nJobs)
   else:
     seed = np.random.randint(1000)
-  if hyp['alg_selection'] != "mean":
+  if hyp['alg_selection'] == "var":
     reward = np.empty((nJobs,hyp['alg_nVals']*2), dtype=np.float64)
   else:
     reward = np.empty((nJobs,hyp['alg_nVals']), dtype=np.float64)
@@ -182,7 +182,7 @@ def batchMpiEval(pop, sameSeedForEachIndividual=True):
     i -= nSlave
     for iWork in range(1,nSlave+1):
       if i < nJobs:
-        if hyp['alg_selection'] != "mean":
+        if hyp['alg_selection'] == "var":
           workResult = np.empty(hyp['alg_nVals']*2, dtype='d')
         else:
           workResult = np.empty(hyp['alg_nVals'], dtype='d')

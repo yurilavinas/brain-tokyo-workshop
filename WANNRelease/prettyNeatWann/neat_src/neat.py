@@ -57,7 +57,7 @@ class Neat():
         self.selStats() 
       elif p['alg_selection'] == "var_multi":
         self.selFailureMulti() 
-        self.archive = copy.deepcopy(self.pop)
+        # self.archive = copy.deepcopy(self.pop)
       elif p['alg_selection'] == "var":
         self.selFailure()
       self.speciate()     # Divide population into species

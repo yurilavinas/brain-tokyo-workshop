@@ -58,11 +58,14 @@ LEG_W, LEG_H = 8/SCALE, 34/SCALE
 VIEWPORT_W = 600
 VIEWPORT_H = 400
 
+###
+REPOSITIONING = 20
+
 TERRAIN_STEP   = 14/SCALE
-TERRAIN_LENGTH = 200     # in steps
+TERRAIN_LENGTH = 200 + REPOSITIONING   # in steps
 TERRAIN_HEIGHT = VIEWPORT_H/SCALE/4
 TERRAIN_GRASS    = 10    # low long are grass spots, in steps
-TERRAIN_STARTPAD = 20+20    # in steps
+TERRAIN_STARTPAD = 20 + REPOSITIONING    # in steps
 FRICTION = 2.5
 
 BIPED_LIMIT = 1600
@@ -257,7 +260,8 @@ class BipedalWalker(gym.Env):
                     self.fd_polygon.shape.vertices=poly
                     t = self.world.CreateStaticBody(
                         fixtures = self.fd_polygon)
-                    t.color1, t.color2 = (1,1,1), (0.6,0.6,0.6)
+                    # t.color1, t.color2 = (1,1,1), (0.6,0.6,0.6)
+                    t.color1, t.color2 = (0.4, 0.6, 0.3),(0.4, 0.6, 0.3)
                     self.terrain.append(t)
                 counter = stair_steps*stair_width
 
@@ -287,7 +291,9 @@ class BipedalWalker(gym.Env):
             self.fd_edge.shape.vertices=poly
             t = self.world.CreateStaticBody(
                 fixtures = self.fd_edge)
-            color = (0.3, 1.0 if i%2==0 else 0.8, 0.3)
+            # color = (0.3, 1.0 if i%2==0 else 0.8, 0.3)
+            color = (0.4, 0.6, 0.3)
+
             t.color1 = color
             t.color2 = color
             self.terrain.append(t)
@@ -343,7 +349,7 @@ class BipedalWalker(gym.Env):
         self._generate_terrain(self.hardcore)
         self._generate_clouds()
 
-        init_x = TERRAIN_STEP*TERRAIN_STARTPAD/2
+        init_x = TERRAIN_STEP*TERRAIN_STARTPAD/2 + 7
         init_y = TERRAIN_HEIGHT+2*LEG_H
         self.hull = self.world.CreateDynamicBody(
             position = (init_x, init_y),
