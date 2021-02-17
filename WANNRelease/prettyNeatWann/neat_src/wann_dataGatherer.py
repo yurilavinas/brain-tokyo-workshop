@@ -73,17 +73,14 @@ class WannDataGatherer():
 
     
     # --- Generation fit/complexity stats ------------------------------------ 
-    print("self.elite[-1].var", self.elite[-1].var)
     self.node_med = np.append(self.node_med,np.median(nodes))
     self.conn_med = np.append(self.conn_med,np.median(conns))
     self.fit_med  = np.append(self.fit_med, np.median(fitness))
     self.best_var = np.append(self.best_var, self.best[-1].var)
-    self.elite_var = np.append(self.best_var, self.elite[-1].var)
+    self.elite_var = np.append(self.elite_var, self.elite[-1].var)
     self.fit_max  = np.append(self.fit_max,  self.elite[-1].fitness)
     self.fit_top  = np.append(self.fit_top,  self.best[-1].fitness)
     self.fit_peak = np.append(self.fit_peak, self.best[-1].fitMax)
-    print("sself.best_var", self.best_var)
-    exit()
     # ------------------------------------------------------------------------ 
 
 
