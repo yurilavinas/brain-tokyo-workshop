@@ -151,10 +151,10 @@ def batchMpiEval(pop, sameSeedForEachIndividual=True):
     seed = np.random.randint(1000, size=nJobs)
   else:
     seed = np.random.randint(1000)
-  if hyp['alg_selection'] == "var":
-    reward = np.empty((nJobs,hyp['alg_nVals']*2), dtype=np.float64)
-  else:
-    reward = np.empty((nJobs,hyp['alg_nVals']), dtype=np.float64)
+  # if hyp['alg_selection'] == "var":
+  #   reward = np.empty((nJobs,hyp['alg_nVals']*2), dtype=np.float64)
+  # else:
+  reward = np.empty((nJobs,hyp['alg_nVals']), dtype=np.float64)
   i = 0 # Index of fitness we are filling
   for iBatch in range(nBatch): # Send one batch of individuals
     for iWork in range(nSlave): # (one to each worker if there)
@@ -182,10 +182,10 @@ def batchMpiEval(pop, sameSeedForEachIndividual=True):
     i -= nSlave
     for iWork in range(1,nSlave+1):
       if i < nJobs:
-        if hyp['alg_selection'] == "var":
-          workResult = np.empty(hyp['alg_nVals']*2, dtype='d')
-        else:
-          workResult = np.empty(hyp['alg_nVals'], dtype='d')
+        # if hyp['alg_selection'] == "var":
+        #   workResult = np.empty(hyp['alg_nVals']*2, dtype='d')
+        # else:
+        workResult = np.empty(hyp['alg_nVals'], dtype='d')
         comm.Recv(workResult, source=iWork)
         reward[i,:] = workResult
       i+=1
