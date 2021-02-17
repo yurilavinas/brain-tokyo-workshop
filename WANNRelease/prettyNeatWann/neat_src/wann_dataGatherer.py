@@ -94,7 +94,6 @@ class WannDataGatherer():
 
   def display(self):
     return    "|---| Elite Fit: " + '{:.2f}'.format(self.fit_max[-1]) \
-    return    "|---| Elite Fit: " + '{:.2f}'.format(self.fit_max[-1]) \
          + " \t|---| Best Fit:  "  + '{:.2f}'.format(self.fit_top[-1]) \
          + " \t|---| Peak Fit:  "  + '{:.2f}'.format(self.fit_peak[-1]) \
          + " \t|---| Best Var:  "  + '{:.2f}'.format(self.best[-1].var) \
