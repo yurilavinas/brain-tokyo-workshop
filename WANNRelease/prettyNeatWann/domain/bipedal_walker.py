@@ -213,13 +213,15 @@ class BipedalWalker(gym.Env):
             #     self.fd_polygon.shape.vertices=poly
             #     t = self.world.CreateStaticBody(
             #         fixtures = self.fd_polygon)
-            #     t.color1, t.color2 = (1,1,1), (0.6,0.6,0.6)
+            #      t.color1, t.color2 = (1,1,1), (0.6,0.6,0.6)
+            #    # t.color1, t.color2 = (0.4, 0.6, 0.3),(0.4, 0.6, 0.3)
             #     self.terrain.append(t)
 
             #     self.fd_polygon.shape.vertices=[(p[0]+TERRAIN_STEP*counter,p[1]) for p in poly]
             #     t = self.world.CreateStaticBody(
             #         fixtures = self.fd_polygon)
-            #     t.color1, t.color2 = (1,1,1), (0.6,0.6,0.6)
+            #      t.color1, t.color2 = (1,1,1), (0.6,0.6,0.6)
+            ##     t.color1, t.color2 = (0.4, 0.6, 0.3),(0.4, 0.6, 0.3)
             #     self.terrain.append(t)
 
             #     counter += 2
@@ -242,7 +244,8 @@ class BipedalWalker(gym.Env):
             #     self.fd_polygon.shape.vertices=poly
             #     t = self.world.CreateStaticBody(
             #         fixtures = self.fd_polygon)
-            #     t.color1, t.color2 = (1,1,1), (0.6,0.6,0.6)
+            #      t.color1, t.color2 = (1,1,1), (0.6,0.6,0.6)
+            ##    t.color1, t.color2 = (0.4, 0.6, 0.3),(0.4, 0.6, 0.3)
             #     self.terrain.append(t)
 
             elif state==STAIRS and oneshot:
@@ -260,8 +263,8 @@ class BipedalWalker(gym.Env):
                     self.fd_polygon.shape.vertices=poly
                     t = self.world.CreateStaticBody(
                         fixtures = self.fd_polygon)
-                    # t.color1, t.color2 = (1,1,1), (0.6,0.6,0.6)
-                    t.color1, t.color2 = (0.4, 0.6, 0.3),(0.4, 0.6, 0.3)
+                    t.color1, t.color2 = (1,1,1), (0.6,0.6,0.6)
+                    # t.color1, t.color2 = (0.4, 0.6, 0.3),(0.4, 0.6, 0.3)
                     self.terrain.append(t)
                 counter = stair_steps*stair_width
 

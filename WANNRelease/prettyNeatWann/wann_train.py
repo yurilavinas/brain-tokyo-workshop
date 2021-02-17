@@ -221,12 +221,12 @@ def slave():
       comm.Recv(aVec, source=0,  tag=4) # recieve it
       seed = comm.recv(source=0, tag=5) # random seed as int
 
-      if hyp['alg_selection'] != "mean":
-        result = task.getFitness(wVec,aVec,hyp, games[hyp['task']], seed = 4) # process it
-        comm.Send(result, dest=0)            # send it back
-      else:
-        result = task.getFitness(wVec,aVec,hyp, games[hyp['task']]) # process it
-        comm.Send(result, dest=0)            # send it back
+      # if hyp['alg_selection'] != "mean":
+      #   result = task.getFitness(wVec,aVec,hyp, games[hyp['task']], seed = 4) # process it
+      #   comm.Send(result, dest=0)            # send it back
+      # else:
+      result = task.getFitness(wVec,aVec,hyp, games[hyp['task']]) # process it
+      comm.Send(result, dest=0)            # send it back
 
     if n_wVec < 0: # End signal recieved
       print('Worker # ', rank, ' shutting down.')
@@ -256,7 +256,7 @@ def mpi_fork(n):
       IN_MPI="1"
     )
     # print( ["/usr/lib64/openmpi/bin/mpirun ", "-np", str(n), sys.executable] + sys.argv)
-    subprocess.check_call(["mpirun", "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
+    subprocess.check_call(["/usr/lib64/openmpi/bin/mpirun", "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
     return "parent"
   else:
     global nWorker, rank

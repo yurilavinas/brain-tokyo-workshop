@@ -114,7 +114,7 @@ def distance(p1, p2):
 
   return np.sqrt(np.sum((np.array(p1)-np.array(p2))**2))
 
-def sparseness(archive, pop, ind, k = 5):
+def sparseness(archive, pop, ind, k = 15):
   '''
   Novelty Search - What is the behaviour that I want to be be novel?
   Returns the sparseness of the given point p as defined by equation 1 on
@@ -124,8 +124,8 @@ def sparseness(archive, pop, ind, k = 5):
 
   ind = np.asarray(ind)
 
-  nbrs1 = np.argsort([distance(ind, np.asarray(ind_archive.nConn)) for ind_archive in archive])[:k]
-  nbrs2 = np.argsort([distance(ind, np.asarray(ind_pop.nConn)) for ind_pop in pop])[:k]
+  nbrs1 = np.argsort([distance(ind, np.asarray(ind_archive.var)) for ind_archive in archive])[:k]
+  nbrs2 = np.argsort([distance(ind, np.asarray(ind_pop.var)) for ind_pop in pop])[:k]
   
   tmp = []
   for i in nbrs1:
@@ -134,7 +134,7 @@ def sparseness(archive, pop, ind, k = 5):
   for i in nbrs2:
     tmp.append(copy.deepcopy(pop[i]))
 
-  dst = np.sum([distance(ind, np.asarray(ind_archive.nConn)) for ind_archive in tmp])/k
+  dst = np.sum([distance(ind, np.asarray(ind_archive.var)) for ind_archive in tmp])/k
 
   return dst
 

@@ -84,48 +84,23 @@ class WannGymTask(GymTask):
     reward = np.empty((nRep,nVals))
     reward2 = np.empty((nRep,nVals))  
 
-    # envs = list()
-    # for i in range(0,nVals):
-    #   envs.append(make_env(game.env_name))
     for iRep in range(nRep):
       for iVal in range(nVals):
         wMat = self.setWeights(wVec,wVals[iVal])
         
-        # if seed == -1 and view == True:
-
-        #   reward[iRep,iVal] = self.testInd(wMat, aVec, game, folder = str(iRep)+"_"+str(iVal), view=view, seed = seed)
+        # if hyp['alg_selection'] == "var":
+        #   reward[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=4))
+        #   reward2[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=72456))
         # else:
+        reward[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=np.random.randint(1, 1000000000)))
         
-        # reward2[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=seed))
-        
-        if hyp['alg_selection'] == "var":
-          # print("entrou")
-          reward[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=4))
-          reward2[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=72456))
-        else:
-          # print("else")
-          reward[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=np.random.randint(1, 1000000000)))
-        # if seed == -1:
-        #   if view == False:
-        #     reward[iRep,iVal] = self.testInd(wMat, aVec, game, folder = None, view=view, seed=seed)
-        #   else:
-        #     reward[iRep,iVal] = self.testInd(wMat, aVec, game, folder = str(iRep)+"_"+str(iVal), view=view, seed=seed)
-        #     # reward[iRep,iVal] = self.testInd(wMat, aVec, game, env=envs[iVal], folder = str(iRep)+"_"+str(iVal), view=view, seed=seed)
-        # else:
-        #   if view == False:
-        #     reward[iRep,iVal] = self.testInd(wMat, aVec, game, folder = None, view=view, seed=seed + irep)
-        #   else:
-        #     reward[iRep,iVal] = self.testInd(wMat, aVec, game, folder = str(iRep)+"_"+str(iVal), view=view, seed=seed + irep)
-        # envs[iVal].close()
-
-
-    if hyp['alg_selection'] == "var":
-      if returnVals is True:
-        return np.concatenate([np.mean(reward,axis=0), np.mean(reward2,axis=0)]), wVals
-      else:
-        return np.concatenate([np.mean(reward,axis=0), np.mean(reward2,axis=0)])
-    else:
-      if returnVals is True:
-        return np.mean(reward,axis=0), wVals
-      return np.mean(reward,axis=0)
+    # if hyp['alg_selection'] == "var":
+    #   if returnVals is True:
+    #     return np.concatenate([np.mean(reward,axis=0), np.mean(reward2,axis=0)]), wVals
+    #   else:
+    #     return np.concatenate([np.mean(reward,axis=0), np.mean(reward2,axis=0)])
+    # else:
+    if returnVals is True:
+      return np.mean(reward,axis=0), wVals
+    return np.mean(reward,axis=0)
 

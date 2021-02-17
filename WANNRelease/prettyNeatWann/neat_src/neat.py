@@ -153,12 +153,21 @@ class Neat():
     varFit = np.asarray([ind.var for ind in self.pop])
     nConns  = np.asarray([ind.nConn   for ind in self.pop])
 
-    # if(len(self.archive)>0):
-    novelty = [sparseness(self.archive, self.pop, ind.nConn) for ind in self.pop]
+    # novelty = [sparseness(self.archive, self.pop, ind.var) for ind in self.pop]
+    novelty = np.zeros(len(self.pop))
+    for i,ind in enumerate(self.pop):
+      ind.novelty = sparseness(self.archive, self.pop, ind.var)
+      novelty[i] = ind.novelty
+    # if len(self.archive) > 0:
+    #   for ind in self.archive:
+    #     if self.pop[np.argmax(novelty)].novelty > ind.novelty:
+    #       self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
+    # else:
+    self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
 
-    self.archive.append(self.pop[np.argmax(novelty)])
     nConns[nConns==0] = 1 # No conns is always pareto optimal (but boring)
-    objVals = np.c_[novelty,varFit,1/nConns] # Maximize
+    objVals = np.c_[varFit,novelty] # Maximize
+    # objVals = np.c_[novelty,varFit,1/nConns] # Maximize
     
     rank = nsga_sort(objVals)
 

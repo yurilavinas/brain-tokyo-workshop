@@ -26,8 +26,8 @@ def nsga_sort(objVals, returnFronts=False):
   for f in range(len(fronts)):
     x1 = objVals[fronts[f],0]
     x2 = objVals[fronts[f],1]    
-    x3 = objVals[fronts[f],2]    
-    crowdDist = getCrowdingDist(x1) + getCrowdingDist(x2) + getCrowdingDist(x3)
+    # x3 = objVals[fronts[f],2]    
+    crowdDist = getCrowdingDist(x1) + getCrowdingDist(x2)# + getCrowdingDist(x3)
     frontRank = np.argsort(-crowdDist)
     fronts[f] = [fronts[f][i] for i in frontRank]
     

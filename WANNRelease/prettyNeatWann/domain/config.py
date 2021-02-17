@@ -134,7 +134,7 @@ biped = Game(env_name='BipedalWalker-v2',
   weightCap = 2.0,
   noise_bias=0.0,
   output_noise=[False, False, False],
-  max_episode_length = 1000,
+  max_episode_length = 400,
   in_out_labels = [
   'hull_angle','hull_vel_angle','vel_x','vel_y',
   'hip1_angle','hip1_speed','knee1_angle','knee1_speed','leg1_contact',
