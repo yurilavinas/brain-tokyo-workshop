@@ -46,7 +46,7 @@ class WannGymTask(GymTask):
     return wMat
 
 
-  def getFitness(self, wVec, aVec, hyp, game,\
+  def getFitness(self, wVec, aVec, hyp, \
                     nRep=False,seed=-1, nVals=8,view=False,returnVals=False):
     """Get fitness of a single individual with distribution of weights
   
@@ -85,19 +85,23 @@ class WannGymTask(GymTask):
     for iRep in range(nRep):
       for iVal in range(nVals):
         wMat = self.setWeights(wVec,wVals[iVal])
-        
-        # if hyp['alg_selection'] == "var":
+        if seed == -1:
+          reward[iRep,iVal] = self.testInd(wMat, aVec, view=view, seed=seed)
+        else:
+          reward[iRep,iVal] = self.testInd(wMat, aVec, seed=seed+iRep,view=view)
+        # if  hyp['alg_selection'] == "var":
         #   reward[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=4))
         #   reward2[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=72456))
         # else:
-        reward[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=np.random.randint(1, 1000000000)))
     # if hyp['alg_selection'] == "var":
     #   if returnVals is True:
     #     return np.concatenate([np.mean(reward,axis=0), np.mean(reward2,axis=0)]), wVals
     #   else:
     #     return np.concatenate([np.mean(reward,axis=0), np.mean(reward2,axis=0)])
     # else:
+    
     if returnVals is True:
+      print(np.var(np.mean(reward,axis=0)))
       return np.mean(reward,axis=0), wVals
     return np.mean(reward,axis=0)
 

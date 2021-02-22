@@ -28,9 +28,10 @@ def main(argv):
   hyp = loadHyp(pFileName=hyp_default)
   updateHyp(hyp,hyp_adjust)
   task = WannGymTask(games[hyp['task']], nReps=hyp['alg_nReps'])
-  # # Bullet needs some extra help getting started
-  # if hyp['task'].startswith("bullet"):
-  #   task.env.render("human")
+
+  # Bullet needs some extra help getting started
+  if hyp['task'].startswith("bullet"):
+    task.env.render("human")
 
   # Import individual for testing
   wVec, aVec, wKey = importNet(infile)
@@ -38,10 +39,9 @@ def main(argv):
   # Show result
   fitness, wVals = task.getFitness(wVec, aVec, hyp,
                                 nVals=nMean, nRep=nRep,\
-                                view=view,returnVals=True, game = games[hyp['task']])      
+                                view=view,returnVals=True, seed=seed)      
 
   print("[***]\tFitness:", fitness , '\n' + "[***]\tWeight Values:\t" , wVals) 
-  print("[***]\tPeak Fit:", max(fitness) , '\n') 
   lsave(outPref+'reward.out',fitness)
   lsave(outPref+'wVals.out',wVals)
   

@@ -65,9 +65,9 @@ def make_env(env_name, seed=-1, render_mode=False):
   # -- Other  -------------------------------------------------------- -- #
   else:
     env = gym.make(env_name)
-  # if (seed >= 0):
-  #   domain.seed(seed)
-  env.seed(seed)
+  if (seed >= 0):
+    domain.seed(seed)
+  # env.seed(seed)
   return env
 
   
