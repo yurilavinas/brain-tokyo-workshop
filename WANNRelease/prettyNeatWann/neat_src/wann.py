@@ -64,8 +64,8 @@ class Wann(Neat):
       self.pop[i].fitness = np.mean(np.clip(reward[i,:], 0, max(reward[i,:])))
       self.pop[i].mean = np.mean(reward[i,:])
       self.pop[i].var = np.var(np.clip(reward[i,:], 0, max(reward[i,:])))
-      if p['alg_selection'] == "novelty":
-        self.pop[i].novelty   = self.pop[i].novelty
+      # if p['alg_selection'] == "novelty":
+      #   self.pop[i].novelty   = self.pop[i].novelty
       self.pop[i].fitMax  = np.max(reward[i,:])
       self.pop[i].nConn   = self.pop[i].nConn
       self.pop[i].rewards   = reward
