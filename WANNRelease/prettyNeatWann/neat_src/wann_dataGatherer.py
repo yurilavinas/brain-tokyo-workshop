@@ -19,7 +19,7 @@ class WannDataGatherer():
     self.best = []
     self.bestFitVec = []
     self.spec_fit = []
-    self.field = ['x_scale','fit_med','best_var','elite_var','fit_max','fit_top','fit_peak',\
+    self.field = ['x_scale','fit_med','best_var','elite_var', 'best_novelty','elite_novelty','fit_max','fit_top','fit_peak',\
                   'node_med','conn_med',\
                   'elite','best']
                   
@@ -35,6 +35,7 @@ class WannDataGatherer():
     # Readability
     p = self.p
     fitness = [ind.fitness for ind in pop]
+    novelty = [ind.novelty for ind in pop]
     var = [ind.var for ind in pop]
     peakfit = [ind.fitMax for ind in pop]
     nodes = np.asarray([np.shape(ind.node)[1] for ind in pop])
@@ -78,6 +79,8 @@ class WannDataGatherer():
     self.fit_med  = np.append(self.fit_med, np.median(fitness))
     self.best_var = np.append(self.best_var, self.best[-1].var)
     self.elite_var = np.append(self.elite_var, self.elite[-1].var)
+    self.best_novelty = np.append(self.best_novelty, self.best[-1].novelty)
+    self.elite_novelty = np.append(self.elite_novelty, self.best[-1].novelty)
     self.fit_max  = np.append(self.fit_max,  self.elite[-1].fitness)
     self.fit_top  = np.append(self.fit_top,  self.best[-1].fitness)
     self.fit_peak = np.append(self.fit_peak, self.best[-1].fitMax)
@@ -96,7 +99,9 @@ class WannDataGatherer():
          + " \t|---| Best Fit:  "  + '{:.2f}'.format(self.fit_top[-1]) \
          + " \t|---| Peak Fit:  "  + '{:.2f}'.format(self.fit_peak[-1]) \
          + " \t|---| Best Var:  "  + '{:.2f}'.format(self.best[-1].var) \
-         + " \t|---| Elite Var:  "  + '{:.2f}'.format(self.elite[-1].var)
+         + " \t|---| Elite Var:  "  + '{:.2f}'.format(self.elite[-1].var) \
+         + " \t|---| Best novelty:  "  + '{:.2f}'.format(self.best[-1].novelty) \
+         + " \t|---| Elite novelty:  "  + '{:.2f}'.format(self.elite[-1].novelty)
 
   def save(self, gen=(-1), saveFullPop=False):
     ''' Save data to disk '''
@@ -104,9 +109,9 @@ class WannDataGatherer():
     pref = 'log/' + filename
 
     # --- Generation fit/complexity stats ------------------------------------ 
-    gStatLabel = ['x_scale',\
-                  'fit_med', 'best_var','elite_var','fit_max','fit_top','fit_peak',\
-                  'node_med','conn_med']
+    self.field = ['x_scale','fit_med','best_var','elite_var', 'best_novelty','elite_novelty','fit_max','fit_top','fit_peak',\
+                  'node_med','conn_med',\
+                  'elite','best']
     genStats = np.empty((len(self.x_scale),0))
     for i in range(len(gStatLabel)):
       #e.g.         self.    fit_max          [:,None]
