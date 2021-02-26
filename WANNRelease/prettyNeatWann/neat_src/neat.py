@@ -151,14 +151,14 @@ class Neat():
     """Rank population according to Pareto dominance.
     """
     # Compile objectives
-    meanFit = np.asarray([ind.fitness for ind in self.pop])
-    varFit = np.asarray([ind.var for ind in self.pop])
-    nConns  = np.asarray([ind.nConn   for ind in self.pop])
+    # meanFit = np.asarray([ind.fitness for ind in self.pop])
+    # varFit = np.asarray([ind.var for ind in self.pop])
+    # nConns  = np.asarray([ind.nConn   for ind in self.pop])
 
     # novelty = [sparseness(self.archive, self.pop, ind.var) for ind in self.pop]
     novelty = np.zeros(len(self.pop))
     for i,ind in enumerate(self.pop):
-      self.pop[i].novelty = sparseness(self.archive, self.pop, ind.var)
+      self.pop[i].novelty = sparseness(self.archive, self.pop, ind.nConn)
       novelty[i] = self.pop[i].novelty
 
 
@@ -178,16 +178,12 @@ class Neat():
     for i in range(len(self.pop)):
       self.pop[i].rank = rank[i]
 
-    # Assign ranks
-    for i in range(len(self.pop)):
-      self.pop[i].rank = rank[i]
-
   def selNovelty(self):
     novelty = np.zeros(len(self.pop))
     for i,ind in enumerate(self.pop):
-      self.pop[i].novelty = sparseness(self.archive, self.pop, ind.var)
-      self.pop[i].rank = self.pop[i].novelty
+      self.pop[i].novelty = sparseness(self.archive, self.pop, ind.nConn)
       novelty[i] = self.pop[i].novelty
+
 
     if len(self.archive) > 0:
       archive_novelty = [ind.novelty for ind in self.archive]
@@ -195,10 +191,16 @@ class Neat():
         self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
     else:
       self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
+
+    # Assign ranks
+    for i in range(len(self.pop)):
+      self.pop[i].rank = rank[i]
   
   def selFailure(self):
     varFit = np.asarray([ind.var for ind in self.pop])
     rank = np.argsort(varFit)[::-1]
+    
+    # Assign ranks
     for i in range(len(self.pop)):
       self.pop[i].rank = rank[i]
  
