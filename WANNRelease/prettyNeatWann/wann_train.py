@@ -111,11 +111,14 @@ def checkBest(data):
     rep = np.tile(data.best[-1], bestReps)
     fitVector = batchMpiEval(rep, sameSeedForEachIndividual=False)
     if hyp['alg_selection'] == "mean":
+      print("mean")
       trueFit = np.mean(fitVector)
     elif  hyp['alg_selection'] == "novelty":
+      print("novelty")
       trueFit = np.mean(fitVector)
     else:
       trueFit = np.var(fitVector)
+      print("var")
     if trueFit > data.best[-2].fitness:  # Actually better!      
       data.best[-1].fitness = trueFit
       data.fit_top[-1]      = trueFit
@@ -262,7 +265,7 @@ def mpi_fork(n):
       IN_MPI="1"
     )
     # print( ["/usr/lib64/openmpi/bin/mpirun ", "-np", str(n), sys.executable] + sys.argv)
-    subprocess.check_call(["/usr/lib64/openmpi/bin/mpirun", "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
+    subprocess.check_call(["mpirun", "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
     return "parent"
   else:
     global nWorker, rank
