@@ -42,7 +42,6 @@ def master():
   #   init = pop[0].gen + 1
   
   for gen in range(init,hyp['maxGen']):
-    print("gen", gen) 
     pop = alg.ask(init)            # Get newly evolved individuals from NEAT 
     reward = batchMpiEval(pop)  # Send pop to be evaluated by workers
     alg.tell(reward)           # Send fitness to NEAT    
