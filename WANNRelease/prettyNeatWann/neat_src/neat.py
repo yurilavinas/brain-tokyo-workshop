@@ -188,7 +188,6 @@ class Neat():
       self.pop[i].rank = self.pop[i].novelty
       novelty[i] = self.pop[i].novelty
 
-    print(novelty)
     if len(self.archive) > 0:
       archive_novelty = [ind.novelty for ind in self.archive]
       if self.pop[np.argmax(novelty)].novelty > self.archive[np.argmax(archive_novelty)].novelty:
