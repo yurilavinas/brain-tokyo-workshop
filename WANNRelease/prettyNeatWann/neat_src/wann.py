@@ -64,8 +64,6 @@ class Wann(Neat):
       self.pop[i].fitness = np.mean(np.clip(reward[i,:], 0, max(reward[i,:])))
       self.pop[i].mean = np.mean(reward[i,:])
       self.pop[i].var = np.var(np.clip(reward[i,:], 0, max(reward[i,:])))
-      # if p['alg_selection'] == "novelty":
-      #   self.pop[i].novelty   = self.pop[i].novelty
       self.pop[i].fitMax  = np.max(reward[i,:])
       self.pop[i].nConn   = self.pop[i].nConn
       self.pop[i].rewards   = reward
@@ -78,6 +76,8 @@ class Wann(Neat):
       archive_novelty = [ind.novelty for ind in self.archive]
       if self.pop[np.argmax(novelty)].novelty > self.archive[np.argmax(archive_novelty)].novelty:
         self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
+      if len(self.archive) > len(self.pop):
+        del self.archive[0]
     else:
       self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
       

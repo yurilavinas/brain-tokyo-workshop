@@ -36,9 +36,9 @@ class WannDataGatherer():
     p = self.p
     fitness = [ind.fitness for ind in pop]
     novelty = [ind.novelty for ind in pop]
-
     var = [ind.var for ind in pop]
     peakfit = [ind.fitMax for ind in pop]
+    
     nodes = np.asarray([np.shape(ind.node)[1] for ind in pop])
     conns = np.asarray([ind.nConn for ind in pop])
     
@@ -65,7 +65,7 @@ class WannDataGatherer():
       self.elite.append(pop[np.argmax(novelty)])
       if len(self.best) == 0:
         self.best = copy.deepcopy(self.elite)
-      elif (self.elite[-1].novelty > self.best[-1].novelty):
+      elif (self.elite[-1].fitness > self.best[-1].fitness):
         self.best = np.append(self.best,copy.deepcopy(self.elite[-1]))
         self.newBest = True
       else:
