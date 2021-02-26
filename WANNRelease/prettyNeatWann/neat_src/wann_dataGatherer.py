@@ -36,7 +36,7 @@ class WannDataGatherer():
     p = self.p
     fitness = [ind.fitness for ind in pop]
     novelty = [ind.novelty for ind in pop]
-    print(novelty)
+    print("novelty in gather",novelty)
     var = [ind.var for ind in pop]
     peakfit = [ind.fitMax for ind in pop]
     nodes = np.asarray([np.shape(ind.node)[1] for ind in pop])
@@ -80,7 +80,7 @@ class WannDataGatherer():
     self.fit_med  = np.append(self.fit_med, np.median(fitness))
     self.fit_var  = np.append(self.fit_var, np.median(var))
     self.fit_novelty  = np.append(self.fit_novelty, np.median(novelty))
-    print(self.fit_novelty)
+    # print(self.fit_novelty)
     self.best_var = np.append(self.best_var, self.best[-1].var)
     self.elite_var = np.append(self.elite_var, self.elite[-1].var)
 
