@@ -70,6 +70,7 @@ class Wann(Neat):
       self.pop[i].nConn   = self.pop[i].nConn
       self.pop[i].rewards   = reward
 
+    novelty = np.zeros(len(self.pop))
     for i in range(len(self.pop)):
       self.pop[i].novelty = sparseness(self.archive, self.pop, self.pop[i].nConn)
       novelty[i] = self.pop[i].novelty
