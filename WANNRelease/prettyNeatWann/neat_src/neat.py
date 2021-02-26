@@ -177,8 +177,8 @@ class Neat():
 
   def selNovelty(self):
     novelty = np.zeros(len(self.pop))
-    for i,ind in enumerate(self.pop):
-      self.pop[i].novelty = sparseness(self.archive, self.pop, ind.nConn)
+    for i in range(len(self.pop)):
+      self.pop[i].novelty = sparseness(self.archive, self.pop, self.pop[i].nConn)
       novelty[i] = self.pop[i].novelty
 
 
@@ -190,6 +190,7 @@ class Neat():
       self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
 
     # Assign ranks
+    print("novelty",novelty)
     for i in range(len(self.pop)):
       self.pop[i].rank = novelty[i]
   
