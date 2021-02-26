@@ -196,7 +196,7 @@ class Neat():
       self.pop[i].rank = self.pop[i].novelty
 
     for i in range(len(self.pop)):
-      print(pop[i].novelty)
+      print(self.pop[i].novelty)
     exit()
   
   def selFailure(self):
