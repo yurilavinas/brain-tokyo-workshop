@@ -56,8 +56,8 @@ class Neat():
         self.probMoo()      # Rank population according to objectivess
       elif p['alg_selection'] == "novelty":
         self.selNovelty()      # Rank population according to novelty
-      elif p['alg_selection'] == "dist":
-        self.selStats() 
+      # elif p['alg_selection'] == "dist":
+      #   self.selStats() 
       elif p['alg_selection'] == "var_multi":
         self.selFailureMulti() 
       elif p['alg_selection'] == "var":
