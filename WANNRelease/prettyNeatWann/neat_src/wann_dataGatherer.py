@@ -109,7 +109,7 @@ class WannDataGatherer():
     pref = 'log/' + filename
 
     # --- Generation fit/complexity stats ------------------------------------ 
-    self.field = ['x_scale','fit_med','best_var','elite_var', 'best_novelty','elite_novelty','fit_max','fit_top','fit_peak',\
+    gStatLabel = ['x_scale','fit_med','best_var','elite_var', 'best_novelty','elite_novelty','fit_max','fit_top','fit_peak',\
                   'node_med','conn_med',\
                   'elite','best']
     genStats = np.empty((len(self.x_scale),0))
