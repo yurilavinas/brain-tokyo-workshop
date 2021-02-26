@@ -62,7 +62,7 @@ class Neat():
         self.selFailureMulti() 
       elif p['alg_selection'] == "var":
         self.selFailure()
-      # self.speciate()     # Divide population into species
+      self.speciate()     # Divide population into species
       self.evolvePop()    # Create child population 
 
     return self.pop    # Send child population for evaluation
