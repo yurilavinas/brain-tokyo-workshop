@@ -115,8 +115,7 @@ class WannDataGatherer():
 
     # --- Generation fit/complexity stats ------------------------------------ 
     gStatLabel = ['x_scale','fit_med','fit_var','fit_novelty','best_var','elite_var', 'best_novelty','elite_novelty','fit_max','fit_top','fit_peak',\
-                  'node_med','conn_med',\
-                  'elite','best']
+                  'node_med','conn_med']
     genStats = np.empty((len(self.x_scale),0))
     for i in range(len(gStatLabel)):
       #e.g.         self.    fit_max          [:,None]
