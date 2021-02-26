@@ -49,6 +49,7 @@ class Ind():
     self.var   = 0
     self.elite_var   = 0
     self.novelty   = 0
+    self.elite_novelty   = 0
     self.rewards = []
     self.best_rewards = []
     self.fitness = [] # Mean fitness over trials

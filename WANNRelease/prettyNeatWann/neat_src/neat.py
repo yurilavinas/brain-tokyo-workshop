@@ -37,6 +37,7 @@ class Neat():
     self.gen     = 0  
     self.mean     = 0  
     self.var     = 0  
+    self.novelty     = 0  
 
   ''' Subfunctions '''
   from ._variation import evolvePop, recombine
