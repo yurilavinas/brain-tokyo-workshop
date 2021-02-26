@@ -110,7 +110,12 @@ def checkBest(data):
     bestReps = max(hyp['bestReps'], (nWorker-1))
     rep = np.tile(data.best[-1], bestReps)
     fitVector = batchMpiEval(rep, sameSeedForEachIndividual=False)
-    trueFit = np.mean(fitVector)
+    if hyp['alg_selection'] == "mean":
+      trueFit = np.mean(fitVector)
+    elif  hyp['alg_selection'] == "novelty":
+      trueFit = np.mean(fitVector)
+    else:
+      trueFit = np.var(fitVector)
     if trueFit > data.best[-2].fitness:  # Actually better!      
       data.best[-1].fitness = trueFit
       data.fit_top[-1]      = trueFit
