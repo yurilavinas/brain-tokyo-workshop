@@ -86,8 +86,8 @@ class WannDataGatherer():
 
     self.best_novelty = np.append(self.best_novelty, self.best[-1].novelty)
     self.elite_novelty = np.append(self.elite_novelty, self.elite[-1].novelty)
-    print(self.best_novelty[-1].novelty)
-    print(self.elite_novelty[-1].novelty)
+    # print(self.best_novelty[-1].novelty)
+    # print(self.elite_novelty[-1].novelty)
     self.fit_max  = np.append(self.fit_max,  self.elite[-1].fitness)
     self.fit_top  = np.append(self.fit_top,  self.best[-1].fitness)
     self.fit_peak = np.append(self.fit_peak, self.best[-1].fitMax)
