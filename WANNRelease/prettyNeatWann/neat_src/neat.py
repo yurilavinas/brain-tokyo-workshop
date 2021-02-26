@@ -178,12 +178,12 @@ class Neat():
     for i in range(len(self.pop)):
       self.pop[i].rank = rank[i]
 
-  def selFailure(self):
+  def selNovelty(self):
     novelty = np.zeros(len(self.pop))
     for i,ind in enumerate(self.pop):
-      ind.novelty = sparseness(self.archive, self.pop, ind.var)
-      ind.rank = ind.novelty
-      novelty[i] = ind.novelty
+      self.pop[i].novelty = sparseness(self.archive, self.pop, ind.var)
+      self.pop[i].rank = self.pop[i].novelty
+      novelty[i] = self.pop[i].novelty
 
 
     if len(self.archive) > 0:
@@ -193,7 +193,7 @@ class Neat():
     else:
       self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
   
-  def selNovelty(self):
+  def selFailure(self):
     varFit = np.asarray([ind.var for ind in self.pop])
     rank = np.argsort(varFit)[::-1]
     for i in range(len(self.pop)):
