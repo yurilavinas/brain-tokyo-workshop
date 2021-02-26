@@ -152,19 +152,7 @@ class Neat():
     """
     # Compile objectives
     varFit = np.asarray([ind.var for ind in self.pop])
-
-    novelty = np.zeros(len(self.pop))
-    for i,ind in enumerate(self.pop):
-      self.pop[i].novelty = sparseness(self.archive, self.pop, ind.nConn)
-      novelty[i] = self.pop[i].novelty
-
-
-    if len(self.archive) > 0:
-      archive_novelty = [ind.novelty for ind in self.archive]
-      if self.pop[np.argmax(novelty)].novelty > self.archive[np.argmax(archive_novelty)].novelty:
-        self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
-    else:
-      self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
+    novelty = np.asarray([ind.novelty for ind in self.pop])
 
     objVals = np.c_[varFit,novelty] # Maximize    
     rank = nsga_sort(objVals)
@@ -174,20 +162,8 @@ class Neat():
       self.pop[i].rank = rank[i]
 
   def selNovelty(self):
-    novelty = np.zeros(len(self.pop))
-
-    for i in range(len(self.pop)):
-      self.pop[i].novelty = sparseness(self.archive, self.pop, self.pop[i].nConn)
-      novelty[i] = self.pop[i].novelty
-
-
-    if len(self.archive) > 0:
-      archive_novelty = [ind.novelty for ind in self.archive]
-      if self.pop[np.argmax(novelty)].novelty > self.archive[np.argmax(archive_novelty)].novelty:
-        self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
-    else:
-      self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
-
+    
+    novelty = np.asarray([ind.novelty for ind in self.pop])
     # Assign ranks
     print("novelty in neat",novelty)
     rank = np.argsort(novelty)[::-1]
