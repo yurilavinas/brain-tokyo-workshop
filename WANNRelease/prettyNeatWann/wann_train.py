@@ -52,6 +52,8 @@ def master():
     data = gatherData(data,alg,gen,init,hyp)
     print(gen, '\t', data.display())
 
+  if hyp['alg_selection'] == "novelty": 
+    hyp['alg_selection'] = "novelty" 
   # Clean up and data gathering at run end
   data = gatherData(data,alg,gen,init,hyp,savePop=True)
   data.save()
