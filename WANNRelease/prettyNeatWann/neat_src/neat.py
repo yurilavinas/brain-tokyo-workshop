@@ -56,16 +56,13 @@ class Neat():
         self.probMoo()      # Rank population according to objectivess
       elif p['alg_selection'] == "novelty":
         self.selNovelty()      # Rank population according to novelty
-        for i in range(len(self.pop)):
-          print(self.pop[i].novelty)
-        exit()
       elif p['alg_selection'] == "dist":
         self.selStats() 
       elif p['alg_selection'] == "var_multi":
         self.selFailureMulti() 
       elif p['alg_selection'] == "var":
         self.selFailure()
-      self.speciate()     # Divide population into species
+      # self.speciate()     # Divide population into species
       self.evolvePop()    # Create child population 
 
     return self.pop    # Send child population for evaluation
