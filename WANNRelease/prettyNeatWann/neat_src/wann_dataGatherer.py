@@ -50,7 +50,6 @@ class WannDataGatherer():
     
     # --- Best Individual ----------------------------------------------------
     if p['alg_selection'] != "mean" and p['alg_selection'] != "novelty":
-      print("wrong")
       self.elite.append(pop[np.argmax(var)])
       if len(self.best) == 0:
         self.best = copy.deepcopy(self.elite)
@@ -61,7 +60,6 @@ class WannDataGatherer():
         self.best = np.append(self.best,copy.deepcopy(self.best[-1]))   
         self.newBest = False
     else:
-      print("right")
       self.elite.append(pop[np.argmax(fitness)])
       if len(self.best) == 0:
         self.best = copy.deepcopy(self.elite)
