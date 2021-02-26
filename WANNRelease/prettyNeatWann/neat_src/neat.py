@@ -195,10 +195,6 @@ class Neat():
     for i in range(len(self.pop)):
       self.pop[i].rank = self.pop[i].novelty
 
-    for i in range(len(self.pop)):
-      print(self.pop[i].novelty)
-    exit()
-  
   def selFailure(self):
     varFit = np.asarray([ind.var for ind in self.pop])
     rank = np.argsort(varFit)[::-1]

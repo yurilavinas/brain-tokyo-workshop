@@ -46,9 +46,7 @@ def master():
     pop = alg.ask(init)            # Get newly evolved individuals from NEAT 
     reward = batchMpiEval(pop)  # Send pop to be evaluated by workers
     alg.tell(reward)           # Send fitness to NEAT    
-    for i in range(len(pop)):
-      print(pop[i].novelty)
-    # exit()
+
     # attrs = vars(pop[0])
     # print(', '.join("%s: %s" % item for item in attrs.items())) 
 
