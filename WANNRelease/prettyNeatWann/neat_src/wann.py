@@ -91,10 +91,10 @@ class Wann(Neat):
       nConns[nConns==0] = 1 # No conns is always pareto optimal (but boring)
       objVals = np.c_[meanFit,maxFit,1/nConns] # Maximize
       # Alternate second objective
-      if self.p['alg_probMoo'] < np.random.rand():
-        rank = nsga_sort(objVals[:,[0,1]])
-      else:
-        rank = nsga_sort(objVals[:,[0,2]])
+      # if self.p['alg_probMoo'] < np.random.rand():
+      rank = nsga_sort(objVals[:,[0,1]])
+      # else:
+      #   rank = nsga_sort(objVals[:,[0,2]])
       # Assign ranks
       for i in range(len(self.pop)):
         self.pop[i].rank = rank[i]
