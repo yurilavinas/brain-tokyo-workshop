@@ -56,6 +56,9 @@ class Neat():
         self.probMoo()      # Rank population according to objectivess
       elif p['alg_selection'] == "novelty":
         self.selNovelty()      # Rank population according to novelty
+        for i in range(len(self.pop)):
+          print(self.pop[i].novelty)
+        exit()
       elif p['alg_selection'] == "dist":
         self.selStats() 
       elif p['alg_selection'] == "var_multi":
@@ -177,7 +180,7 @@ class Neat():
 
   def selNovelty(self):
     novelty = np.zeros(len(self.pop))
-    
+
     for i in range(len(self.pop)):
       self.pop[i].novelty = sparseness(self.archive, self.pop, self.pop[i].nConn)
       novelty[i] = self.pop[i].novelty
@@ -193,7 +196,7 @@ class Neat():
     # Assign ranks
     print("novelty",novelty)
     for i in range(len(self.pop)):
-      self.pop[i].rank = novelty[i]
+      self.pop[i].rank = self.pop[i].novelty
   
   def selFailure(self):
     varFit = np.asarray([ind.var for ind in self.pop])
