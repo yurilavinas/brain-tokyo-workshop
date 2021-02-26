@@ -191,7 +191,7 @@ class Neat():
     # Assign ranks
     print("novelty in neat",novelty)
     for i in range(len(self.pop)):
-      self.pop[i].rank = -self.pop[i].novelty
+      self.pop[i].rank = self.pop[i].novelty
 
   def selFailure(self):
     varFit = np.asarray([ind.var for ind in self.pop])
