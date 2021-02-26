@@ -166,9 +166,7 @@ class Neat():
     else:
       self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
 
-    nConns[nConns==0] = 1 # No conns is always pareto optimal (but boring)
-    objVals = np.c_[varFit,novelty] # Maximize
-    
+    objVals = np.c_[varFit,novelty] # Maximize    
     rank = nsga_sort(objVals)
 
     # Assign ranks
@@ -191,7 +189,7 @@ class Neat():
       self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
 
     # Assign ranks
-    print("novelty",novelty)
+    print("novelty in neat",novelty)
     for i in range(len(self.pop)):
       self.pop[i].rank = self.pop[i].novelty
 

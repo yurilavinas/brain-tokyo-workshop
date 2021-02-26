@@ -35,7 +35,6 @@ class WannDataGatherer():
     # Readability
     p = self.p
     fitness = [ind.fitness for ind in pop]
-    print("fitness in gather",fitness)
     novelty = [ind.novelty for ind in pop]
     print("novelty in gather",novelty)
     var = [ind.var for ind in pop]
