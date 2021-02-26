@@ -59,7 +59,6 @@ class Neat():
         self.selStats() 
       elif p['alg_selection'] == "var_multi":
         self.selFailureMulti() 
-        # self.archive = copy.deepcopy(self.pop)
       elif p['alg_selection'] == "var":
         self.selFailure()
       self.speciate()     # Divide population into species
@@ -158,8 +157,8 @@ class Neat():
     # novelty = [sparseness(self.archive, self.pop, ind.var) for ind in self.pop]
     novelty = np.zeros(len(self.pop))
     for i,ind in enumerate(self.pop):
-      ind.novelty = sparseness(self.archive, self.pop, ind.var)
-      novelty[i] = ind.novelty
+      self.pop[i].novelty = sparseness(self.archive, self.pop, ind.var)
+      novelty[i] = self.pop[i].novelty
 
 
     if len(self.archive) > 0:
@@ -178,6 +177,10 @@ class Neat():
     for i in range(len(self.pop)):
       self.pop[i].rank = rank[i]
 
+    # Assign ranks
+    for i in range(len(self.pop)):
+      self.pop[i].rank = rank[i]
+
   def selNovelty(self):
     novelty = np.zeros(len(self.pop))
     for i,ind in enumerate(self.pop):
@@ -185,7 +188,7 @@ class Neat():
       self.pop[i].rank = self.pop[i].novelty
       novelty[i] = self.pop[i].novelty
 
-
+    print(novelty)
     if len(self.archive) > 0:
       archive_novelty = [ind.novelty for ind in self.archive]
       if self.pop[np.argmax(novelty)].novelty > self.archive[np.argmax(archive_novelty)].novelty:

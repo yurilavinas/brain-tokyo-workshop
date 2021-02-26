@@ -5,7 +5,8 @@ import math
 import argparse
 import subprocess
 import numpy as np
-np.set_printoptions(precision=2, linewidth=160) 
+np.set_printoptions(precision=2, linewidth=200) 
+warnings.filterwarnings('ignore')
 # from neat_src.neat import initPopResume
 
 # MPI
