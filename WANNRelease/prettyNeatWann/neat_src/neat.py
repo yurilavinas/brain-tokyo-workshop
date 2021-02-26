@@ -151,11 +151,8 @@ class Neat():
     """Rank population according to Pareto dominance.
     """
     # Compile objectives
-    # meanFit = np.asarray([ind.fitness for ind in self.pop])
-    # varFit = np.asarray([ind.var for ind in self.pop])
-    # nConns  = np.asarray([ind.nConn   for ind in self.pop])
+    varFit = np.asarray([ind.var for ind in self.pop])
 
-    # novelty = [sparseness(self.archive, self.pop, ind.var) for ind in self.pop]
     novelty = np.zeros(len(self.pop))
     for i,ind in enumerate(self.pop):
       self.pop[i].novelty = sparseness(self.archive, self.pop, ind.nConn)
@@ -194,7 +191,7 @@ class Neat():
 
     # Assign ranks
     for i in range(len(self.pop)):
-      self.pop[i].rank = rank[i]
+      self.pop[i].rank = novelty[i]
   
   def selFailure(self):
     varFit = np.asarray([ind.var for ind in self.pop])
