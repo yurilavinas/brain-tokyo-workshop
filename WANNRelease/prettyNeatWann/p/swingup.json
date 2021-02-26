@@ -4,5 +4,6 @@
     "alg_nReps": 3,
     "popSize": 192,
     "select_eliteRatio": 0.2,
-    "select_tournSize": 8
+    "select_tournSize": 8,
+    "alg_selection": "mean"
 }

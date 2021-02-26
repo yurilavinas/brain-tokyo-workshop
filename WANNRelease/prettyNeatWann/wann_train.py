@@ -29,15 +29,15 @@ def master():
 
   # checkpoint - begin
   init = 0
-  pref = 'log/' + fileName + '_pop/'
-  if os.path.exists(pref):
-    print("loading pop. data from file...")
-    pop = alg.initPop()
-    import pickle
-    with open(pref+'_pop.checkpoint', 'rb') as fp:
-      pop = pickle.load(fp)
-    init = pop[0].gen + 1
-
+  # pref = 'log/' + fileName + '_pop/'
+  # if os.path.exists(pref):
+  #   print("loading pop. data from file...")
+  #   pop = alg.initPop()
+  #   import pickle
+  #   with open(pref+'_pop.checkpoint', 'rb') as fp:
+  #     pop = pickle.load(fp)
+  #   init = pop[0].gen + 1
+  
   for gen in range(init,hyp['maxGen']): 
     pop = alg.ask(init)            # Get newly evolved individuals from NEAT 
     reward = batchMpiEval(pop)  # Send pop to be evaluated by workers
@@ -141,11 +141,12 @@ def batchMpiEval(pop, sameSeedForEachIndividual=True):
   Todo:
     * Asynchronous evaluation instead of batches
   """
+  
   global nWorker, hyp
   nSlave = nWorker-1
   nJobs = len(pop)
   nBatch= math.ceil(nJobs/nSlave) # First worker is master
-
+  
     # Set same seed for each individual
   if sameSeedForEachIndividual == False:
     seed = np.random.randint(1000, size=nJobs)
@@ -256,7 +257,7 @@ def mpi_fork(n):
       IN_MPI="1"
     )
     # print( ["/usr/lib64/openmpi/bin/mpirun ", "-np", str(n), sys.executable] + sys.argv)
-    subprocess.check_call(["mpirun", "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
+    subprocess.check_call(["/usr/lib64/openmpi/bin/mpirun", "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
     return "parent"
   else:
     global nWorker, rank

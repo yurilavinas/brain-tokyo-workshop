@@ -73,6 +73,7 @@ class Neat():
                [nInd X 1]
 
     """
+    print("reward",reward)
     for i in range(np.shape(reward)[0]):
       self.pop[i].fitness = reward[i]
       self.pop[i].nConn   = self.pop[i].nConn
@@ -158,16 +159,17 @@ class Neat():
     for i,ind in enumerate(self.pop):
       ind.novelty = sparseness(self.archive, self.pop, ind.var)
       novelty[i] = ind.novelty
-    # if len(self.archive) > 0:
-    #   for ind in self.archive:
-    #     if self.pop[np.argmax(novelty)].novelty > ind.novelty:
-    #       self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
-    # else:
-    self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
+
+
+    if len(self.archive) > 0:
+      archive_novelty = [ind.novelty for ind in self.archive]
+      if self.pop[np.argmax(novelty)].novelty > self.archive[np.argmax(archive_novelty)].novelty:
+        self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
+    else:
+      self.archive.append(copy.deepcopy(self.pop[np.argmax(novelty)]))
 
     nConns[nConns==0] = 1 # No conns is always pareto optimal (but boring)
     objVals = np.c_[varFit,novelty] # Maximize
-    # objVals = np.c_[novelty,varFit,1/nConns] # Maximize
     
     rank = nsga_sort(objVals)
 
