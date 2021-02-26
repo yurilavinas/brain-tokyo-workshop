@@ -165,7 +165,6 @@ class Neat():
     
     novelty = np.asarray([ind.novelty for ind in self.pop])
     # Assign ranks
-    print("novelty in neat",novelty)
     rank = np.argsort(novelty)[::-1]
     
     # Assign ranks
