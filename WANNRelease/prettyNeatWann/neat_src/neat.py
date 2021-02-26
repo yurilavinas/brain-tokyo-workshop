@@ -195,7 +195,7 @@ class Neat():
     for i in range(len(self.pop)):
       self.pop[i].rank = self.pop[i].novelty
 
-    for i in range(len(pop)):
+    for i in range(len(self.pop)):
       print(pop[i].novelty)
     exit()
   
