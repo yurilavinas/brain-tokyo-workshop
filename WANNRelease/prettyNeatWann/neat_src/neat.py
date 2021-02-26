@@ -190,7 +190,7 @@ class Neat():
 
     # Assign ranks
     print("novelty in neat",novelty)
-    rank = np.argsort(varFit)[::-1]
+    rank = np.argsort(novelty)[::-1]
     
     # Assign ranks
     for i in range(len(self.pop)):
