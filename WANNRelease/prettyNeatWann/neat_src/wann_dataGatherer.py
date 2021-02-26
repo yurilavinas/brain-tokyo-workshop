@@ -19,7 +19,7 @@ class WannDataGatherer():
     self.best = []
     self.bestFitVec = []
     self.spec_fit = []
-    self.field = ['x_scale','fit_med','best_var','elite_var', 'best_novelty','elite_novelty','fit_max','fit_top','fit_peak',\
+    self.field = ['x_scale','fit_med','fit_var','fit_novelty','best_var','elite_var', 'best_novelty','elite_novelty','fit_max','fit_top','fit_peak',\
                   'node_med','conn_med',\
                   'elite','best']
                   
@@ -77,10 +77,15 @@ class WannDataGatherer():
     self.node_med = np.append(self.node_med,np.median(nodes))
     self.conn_med = np.append(self.conn_med,np.median(conns))
     self.fit_med  = np.append(self.fit_med, np.median(fitness))
+    self.fit_var  = np.append(self.fit_var, np.median(var))
+    self.fit_novelty  = np.append(self.fit_novelty, np.median(novelty))
+
     self.best_var = np.append(self.best_var, self.best[-1].var)
     self.elite_var = np.append(self.elite_var, self.elite[-1].var)
+
     self.best_novelty = np.append(self.best_novelty, self.best[-1].novelty)
-    self.elite_novelty = np.append(self.elite_novelty, self.best[-1].novelty)
+    self.elite_novelty = np.append(self.elite_novelty, self.elite[-1].novelty)
+
     self.fit_max  = np.append(self.fit_max,  self.elite[-1].fitness)
     self.fit_top  = np.append(self.fit_top,  self.best[-1].fitness)
     self.fit_peak = np.append(self.fit_peak, self.best[-1].fitMax)
@@ -109,7 +114,7 @@ class WannDataGatherer():
     pref = 'log/' + filename
 
     # --- Generation fit/complexity stats ------------------------------------ 
-    gStatLabel = ['x_scale','fit_med','best_var','elite_var', 'best_novelty','elite_novelty','fit_max','fit_top','fit_peak',\
+    gStatLabel = ['x_scale','fit_med','fit_var','fit_novelty','best_var','elite_var', 'best_novelty','elite_novelty','fit_max','fit_top','fit_peak',\
                   'node_med','conn_med',\
                   'elite','best']
     genStats = np.empty((len(self.x_scale),0))

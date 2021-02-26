@@ -18,6 +18,6 @@
     "select_cullRatio": 0.2,
     "select_eliteRatio": 0.2,
     "select_tournSize": 8,
-    "save_mod": 1,
+    "save_mod": 16,
     "bestReps": 20
 }
