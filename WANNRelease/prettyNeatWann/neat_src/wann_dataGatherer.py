@@ -65,7 +65,7 @@ class WannDataGatherer():
       self.elite.append(pop[np.argmax(novelty)])
       if len(self.best) == 0:
         self.best = copy.deepcopy(self.elite)
-      elif (self.elite[-1].fitness > self.best[-1].fitness):
+      elif (self.elite[-1].novelty > self.best[-1].novelty):
         self.best = np.append(self.best,copy.deepcopy(self.elite[-1]))
         self.newBest = True
       else:
