@@ -3,6 +3,11 @@ import numpy as np
 import copy
 from .ann import exportNet
 
+import os
+import numpy as np
+import copy
+from .ann import exportNet
+
 class WannDataGatherer():
   ''' Data recorder for WANN algorithm'''
   def __init__(self, filename, hyp): 
@@ -34,11 +39,13 @@ class WannDataGatherer():
   def gatherData(self, pop, species):
     # Readability
     p = self.p
+
     fitness = [ind.fitness for ind in pop]
+    
     novelty = [ind.novelty for ind in pop]
     var = [ind.var for ind in pop]
-    peakfit = [ind.fitMax for ind in pop]
 
+    peakfit = [ind.fitMax for ind in pop]
     nodes = np.asarray([np.shape(ind.node)[1] for ind in pop])
     conns = np.asarray([ind.nConn for ind in pop])
     
@@ -61,7 +68,7 @@ class WannDataGatherer():
       else:
         self.best = np.append(self.best,copy.deepcopy(self.best[-1]))   
         self.newBest = False
-    if p['alg_selection'] == "novelty":
+    elif p['alg_selection'] == "novelty":
       self.elite.append(pop[np.argmax(novelty)])
       if len(self.best) == 0:
         self.best = copy.deepcopy(self.elite)
@@ -81,7 +88,6 @@ class WannDataGatherer():
       else:
         self.best = np.append(self.best,copy.deepcopy(self.best[-1]))   
         self.newBest = False
-      
     # ------------------------------------------------------------------------ 
 
     

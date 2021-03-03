@@ -5,11 +5,7 @@ import math
 import argparse
 import subprocess
 import numpy as np
-import warnings
-
-np.set_printoptions(precision=2, linewidth=200) 
-warnings.filterwarnings('ignore')
-# from neat_src.neat import initPopResume
+np.set_printoptions(precision=2, linewidth=160) 
 
 # MPI
 from mpi4py import MPI
@@ -26,41 +22,24 @@ def master():
   """Main NEAT optimization script
   """
   global fileName, hyp
-  filename = fileName
-  data = WannDataGatherer(filename, hyp)
+  data = WannDataGatherer(fileName, hyp)
   alg  = Wann(hyp)
 
-  # checkpoint - begin
-  init = 0
-  # pref = 'log/' + fileName + '_pop/'
-  # if os.path.exists(pref):
-  #   print("loading pop. data from file...")
-  #   pop = alg.initPop()
-  #   import pickle
-  #   with open(pref+'_pop.checkpoint', 'rb') as fp:
-  #     pop = pickle.load(fp)
-  #   init = pop[0].gen + 1
-  
-  for gen in range(init,hyp['maxGen']):
-    pop = alg.ask(init)            # Get newly evolved individuals from NEAT 
+  for gen in range(hyp['maxGen']):        
+    pop = alg.ask()            # Get newly evolved individuals from NEAT  
     reward = batchMpiEval(pop)  # Send pop to be evaluated by workers
     alg.tell(reward)           # Send fitness to NEAT    
 
-    # attrs = vars(pop[0])
-    # print(', '.join("%s: %s" % item for item in attrs.items())) 
-
-    data = gatherData(data,alg,gen,init,hyp)
+    data = gatherData(data,alg,gen,hyp)
     print(gen, '\t', data.display())
 
-  if hyp['alg_selection'] == "novelty": 
-    hyp['alg_selection'] = "novelty" 
   # Clean up and data gathering at run end
-  data = gatherData(data,alg,gen,init,hyp,savePop=True)
+  data = gatherData(data,alg,gen,hyp,savePop=True)
   data.save()
-  data.savePop(alg.pop,filename) # Save population as 2D numpy arrays
+  data.savePop(alg.pop,fileName) # Save population as 2D numpy arrays
   stopAllWorkers()
 
-def gatherData(data,alg,gen,diff,hyp,savePop=False):
+def gatherData(data,alg,gen,hyp,savePop=False):
   """Collects run data, saves it to disk, and exports pickled population
 
   Args:
@@ -76,19 +55,12 @@ def gatherData(data,alg,gen,diff,hyp,savePop=False):
     data - (DataGatherer) - updated run data
   """
   data.gatherData(alg.pop, alg.species)
-
-  pref = 'log/' + fileName + '_pop/'
-  if not os.path.exists(pref):
-      os.makedirs(pref)
-  import pickle
-  with open(pref+'_pop.checkpoint', 'wb') as fp:
-    pickle.dump(alg.pop,fp)
   if (gen%hyp['save_mod']) == 0:
     data = checkBest(data)
-    data.save(gen-diff)
+    data.save(gen)
 
-  if savePop == True: # Get a sample pop to play with in notebooks    
-    # global fileName
+  if savePop is True: # Get a sample pop to play with in notebooks    
+    global fileName
     pref = 'log/' + fileName
     import pickle
     with open(pref+'_pop.obj', 'wb') as fp:
@@ -111,7 +83,7 @@ def checkBest(data):
   * This is a bit hacky, but is only for data gathering, and not optimization
   """
   global filename, hyp
-  if data.newBest == True:
+  if data.newBest is True:
     bestReps = max(hyp['bestReps'], (nWorker-1))
     rep = np.tile(data.best[-1], bestReps)
     fitVector = batchMpiEval(rep, sameSeedForEachIndividual=False)
@@ -146,21 +118,18 @@ def batchMpiEval(pop, sameSeedForEachIndividual=True):
   Todo:
     * Asynchronous evaluation instead of batches
   """
-  
   global nWorker, hyp
   nSlave = nWorker-1
   nJobs = len(pop)
   nBatch= math.ceil(nJobs/nSlave) # First worker is master
-  
+
     # Set same seed for each individual
-  if sameSeedForEachIndividual == False:
+  if sameSeedForEachIndividual is False:
     seed = np.random.randint(1000, size=nJobs)
   else:
     seed = np.random.randint(1000)
-  # if hyp['alg_selection'] == "var":
-  #   reward = np.empty((nJobs,hyp['alg_nVals']*2), dtype=np.float64)
-  # else:
-  reward = np.empty((nJobs,hyp['alg_nVals']), dtype=np.float64)
+
+  reward = np.empty( (nJobs,hyp['alg_nVals']), dtype=np.float64)
   i = 0 # Index of fitness we are filling
   for iBatch in range(nBatch): # Send one batch of individuals
     for iWork in range(nSlave): # (one to each worker if there)
@@ -177,7 +146,7 @@ def batchMpiEval(pop, sameSeedForEachIndividual=True):
         if sameSeedForEachIndividual is False:
           comm.send(seed.item(i), dest=(iWork)+1, tag=5)
         else:
-          comm.send(seed, dest=(iWork)+1, tag=5)        
+          comm.send(  seed, dest=(iWork)+1, tag=5)        
 
       else: # message size of 0 is signal to shutdown workers
         n_wVec = 0
@@ -188,9 +157,6 @@ def batchMpiEval(pop, sameSeedForEachIndividual=True):
     i -= nSlave
     for iWork in range(1,nSlave+1):
       if i < nJobs:
-        # if hyp['alg_selection'] == "var":
-        #   workResult = np.empty(hyp['alg_nVals']*2, dtype='d')
-        # else:
         workResult = np.empty(hyp['alg_nVals'], dtype='d')
         comm.Recv(workResult, source=iWork)
         reward[i,:] = workResult
@@ -227,11 +193,7 @@ def slave():
       comm.Recv(aVec, source=0,  tag=4) # recieve it
       seed = comm.recv(source=0, tag=5) # random seed as int
 
-      # if hyp['alg_selection'] != "mean":
-      #   result = task.getFitness(wVec,aVec,hyp, games[hyp['task']], seed = 4) # process it
-      #   comm.Send(result, dest=0)            # send it back
-      # else:
-      result = task.getFitness(wVec,aVec,hyp) # process it
+      result = task.getFitness(wVec,aVec,hyp,seed=seed) # process it
       comm.Send(result, dest=0)            # send it back
 
     if n_wVec < 0: # End signal recieved
@@ -262,7 +224,7 @@ def mpi_fork(n):
       IN_MPI="1"
     )
     # print( ["/usr/lib64/openmpi/bin/mpirun ", "-np", str(n), sys.executable] + sys.argv)
-    subprocess.check_call(["/usr/lib64/openmpi/bin/mpirun", "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
+    subprocess.check_call(["mpirun", "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
     return "parent"
   else:
     global nWorker, rank
@@ -314,4 +276,9 @@ if __name__ == "__main__":
   # Use MPI if parallel
   if "parent" == mpi_fork(args.num_worker+1): os._exit(0)
 
-  main(args)              
+  main(args)                              
+  
+
+
+
+

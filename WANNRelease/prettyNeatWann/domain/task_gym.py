@@ -58,7 +58,9 @@ class GymTask():
     wVec[np.isnan(wVec)] = 0
     reward = np.empty(nRep)
     for iRep in range(nRep):
-      reward[iRep] = self.testInd(wVec, aVec, view=view, seed=seed+iRep)
+      if seed > 0:
+        seed = seed+iRep
+      reward[iRep] = self.testInd(wVec, aVec, view=view, seed=seed)
     fitness = np.mean(reward)
     return fitness
 
@@ -81,13 +83,14 @@ class GymTask():
       random.seed(seed)
       np.random.seed(seed)
       self.env.seed(seed)
+      
     state = self.env.reset()
     self.env.t = 0
     annOut = act(wVec, aVec, self.nInput, self.nOutput, state)  
     action = selectAct(annOut,self.actSelect)    
    
-    wVec[wVec!=0]
-    predName = str(np.mean(wVec[wVec!=0]))
+    # wVec[wVec!=0]
+    # predName = str(np.mean(wVec[wVec!=0]))
     state, reward, done, info = self.env.step(action)
     
     if self.maxEpisodeLength == 0:

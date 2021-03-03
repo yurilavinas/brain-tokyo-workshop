@@ -61,11 +61,11 @@ class Wann(Neat):
     #     self.pop[i].rewards   = (reward1 + reward2)/2
     # else:
     for i in range(np.shape(reward)[0]):
-      self.pop[i].fitness = np.mean(np.clip(reward[i,:], 0, max(reward[i,:])))
-      self.pop[i].mean = np.mean(reward[i,:])
-      self.pop[i].var = np.var(np.clip(reward[i,:], 0, max(reward[i,:])))
-      self.pop[i].fitMax  = np.max(reward[i,:])
+      self.pop[i].fitness = np.mean(reward[i,:])
+      self.pop[i].fitMax  = np.max( reward[i,:])
       self.pop[i].nConn   = self.pop[i].nConn
+      
+      self.pop[i].var = np.var(np.clip(reward[i,:], 0, max(reward[i,:])))
       self.pop[i].rewards   = reward
 
     novelty = np.zeros(len(self.pop))
@@ -91,10 +91,10 @@ class Wann(Neat):
       nConns[nConns==0] = 1 # No conns is always pareto optimal (but boring)
       objVals = np.c_[meanFit,maxFit,1/nConns] # Maximize
       # Alternate second objective
-      # if self.p['alg_probMoo'] < np.random.rand():
-      rank = nsga_sort(objVals[:,[0,1]])
-      # else:
-      #   rank = nsga_sort(objVals[:,[0,2]])
+      if self.p['alg_probMoo'] < np.random.rand():
+        rank = nsga_sort(objVals[:,[0,1]])
+      else:
+        rank = nsga_sort(objVals[:,[0,2]])
       # Assign ranks
       for i in range(len(self.pop)):
         self.pop[i].rank = rank[i]

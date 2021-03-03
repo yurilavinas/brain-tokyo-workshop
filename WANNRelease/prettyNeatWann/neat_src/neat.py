@@ -39,17 +39,19 @@ class Neat():
     self.var     = 0  
     self.novelty     = 0  
 
+    self.indType = Ind
+
   ''' Subfunctions '''
   from ._variation import evolvePop, recombine
   from ._speciate  import Species, speciate, compatDist,\
                           assignSpecies, assignOffspring  
 
-  def ask(self, init=0):
+  def ask(self):
     """Returns newly evolved population
     """
     p = self.p
-    if len(self.pop) == 0 and init == 0:
-      print("Initializing population...")
+    if len(self.pop) == 0:
+      # print("Initializing population...")
       self.initPop()      # Initialize population
     else:
       if p['alg_selection'] == "mean":
