@@ -70,7 +70,7 @@ class Wann(Neat):
 
     novelty = np.zeros(len(self.pop))
     for i in range(len(self.pop)):
-      self.pop[i].novelty = sparseness(self.archive, self.pop, self.pop[i].nConn)
+      self.pop[i].novelty = sparseness(self.archive, self.pop, self.pop[i].conn)
       novelty[i] = self.pop[i].novelty
     if len(self.archive) > 0:
       archive_novelty = [ind.novelty for ind in self.archive]

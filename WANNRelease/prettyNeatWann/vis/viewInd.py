@@ -81,8 +81,8 @@ def getNodeCoord(G,layer,taskName):
     fixed_nodes = np.r_[np.arange(0,nIn),np.arange(nNode-nOut,nNode)]
 
     # Set Figure dimensions
-    fig_wide = 10
-    fig_long = 5
+    fig_wide = 20
+    fig_long = 10
 
     # Assign x and y coordinates per layer
     x = np.ones((1,nNode))*layer # Assign x coord by layer
@@ -124,8 +124,8 @@ def labelInOut(pos, env):
 
     
 def drawNodeLabels(G, pos, aVec):  
-  actLabel = np.array((['','( + )','(0/1)','(sin)','(gau)','(tanh)',\
-                        '(sig)','( - )', '(abs)','(relu)','(cos)']))
+  actLabel = np.array((['',' ( + ) ',' (0/1) ',' (sin) ',' (gau) ',' (tanh) ',\
+                        ' (sig) ',' ( - ) ', ' (abs) ',' (relu) ',' (cos) ']))
   listLabel = actLabel[aVec.astype(int)]  
   label = dict(enumerate(listLabel))
   nx.draw_networkx_labels(G,pos,labels=label)  
@@ -151,7 +151,7 @@ def drawEdge(G, pos, wMat, layer):
 
     # Layer Colors
     for i in range(len(edgeLayer)):
-      C = [i/len(edgeLayer)] * len(edgeLayer[i].edges) 
+      C = [0] * len(edgeLayer[i].edges) 
       nx.draw_networkx_edges(G,pos,edgelist=edgeLayer[i].edges,\
         alpha=.75,width=1.0,edge_color=C,edge_cmap=plt.cm.viridis,\
         edge_vmin=0.0, edge_vmax=1.0,arrowsize=8)
