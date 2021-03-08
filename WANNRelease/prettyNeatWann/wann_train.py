@@ -56,7 +56,7 @@ def gatherData(data,alg,gen,hyp,savePop=False):
   """
   data.gatherData(alg.pop, alg.species)
   if (gen%hyp['save_mod']) == 0:
-    data = checkBest(data)
+    # data = checkBest(data)
     data.save(gen)
 
   if savePop is True: # Get a sample pop to play with in notebooks    

@@ -110,8 +110,8 @@ cartpole_swingup = Game(env_name='CartPoleSwingUp_Hard',
 games['swingup_hard'] = cartpole_swingup
 
 # # > Normal reaction speed
-cartpole_swingup = cartpole_swingup._replace(\
-    env_name='CartPoleSwingUp', max_episode_length=1000)
+# cartpole_swingup = cartpole_swingup._replace(\
+#     env_name='CartPoleSwingUp', max_episode_length=1000)
 games['swingup'] = cartpole_swingup
 
 
