@@ -1,0 +1,9 @@
+{
+    "task":"AugmentBipedalWalkerHardcore",
+    "alg_nReps": 4,
+    "maxGen": 10,
+    "popSize": 2,
+    "prob_initEnable": 0.25,
+    "select_tournSize": 16,
+    "alg_selection": "mean"
+}

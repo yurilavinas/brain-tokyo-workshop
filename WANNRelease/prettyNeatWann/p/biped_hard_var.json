@@ -1,9 +1,0 @@
-{
-    "task":"biped",
-    "alg_nReps": 4,
-    "maxGen": 20,
-    "popSize": 2,
-    "prob_initEnable": 0.25,
-    "select_tournSize": 2,
-    "alg_selection": "var"	
-}
