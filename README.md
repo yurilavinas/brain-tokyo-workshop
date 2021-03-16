@@ -11,7 +11,7 @@ Our goal is to study how we can use failure to guide evolution to display differ
 * [Technologies](#technologies)
 * [Training an agent](#Training)
 * [Gifs](#Gifs)
-* [Code for visualisation](#Visulisation)
+* [Code for visualisation](#Visualisation)
 
 ### Technologies 
 
@@ -23,9 +23,9 @@ This project is implement in **Python3** and uses the libraries:
 2. mpi4py 3.0.1 (pip3 install mpi4py)
 3. OpenAI Gym 0 (pip3 install gym)
 
-### Training an agent
+### Training
 
-Move to folder fmd/fmd_code
+To train an agent, first move to folder fmd/fmd_code
 
 - Using our Failure Diversity Maximisation (fdm)
 -- python3 fmd_train.py -p p/swingup_fdm.json -n 1 -o output
@@ -41,7 +41,7 @@ p/swingup_method_name.json are the parameter file, -n defines the number of core
 
 For more information on the parameters, [check the paper]()
 
-### Gifs of our experiments 
+### Gifs
 
 Failure Diversity Maximisation (fdm)
 <p align="left">
@@ -65,7 +65,7 @@ WANN
 </p>
 
 
-### Visulisation
+### Visualisation
 
 To run the code to generate the images access this [jupyter notebook](fmd/fmd_code/Visualization_Comparison.ipynb).
 
