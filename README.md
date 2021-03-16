@@ -9,8 +9,8 @@ Our goal is to study how we can use failure to guide evolution to display differ
 
 ## Table of contents
 * [Technologies](#technologies)
-* [Training an agent](#Training an agent)
-* [Gifs](#Gifs of our experiments )
+* [Training an agent](#Training)
+* [Gifs](#Gifs)
 * [Code for visualisation](#Visulisation)
 
 ### Technologies 
