@@ -9,7 +9,9 @@ Our goal is to study how we can use failure to guide evolution to display differ
 
 ## Table of contents
 * [Technologies](#technologies)
-* [Setup](#setup)
+* [Training an agent](#Training an agent)
+* [Gifs](#Gifs of our experiments )
+* [Code for visualisation](#Visulisation)
 
 ### Technologies 
 
@@ -63,7 +65,7 @@ WANN
 </p>
 
 
-### Visulasation
+### Visulisation
 
 To run the code to generate the images access this [jupyter notebook](fmd/fmd_code/Visualization_Comparison.ipynb).
 
