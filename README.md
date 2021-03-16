@@ -1,10 +1,10 @@
 # Maximing Failure Diversity in Evolutionary Simulations
 
-This repo contains code for the paper on Failure Diversity in Evolutionary Simulations, submited to ALife 2021.
+This repository contains code for the paper "Failure Diversity in Evolutionary Simulations", submited to ALife 2021.
 
 ----
 
-Our goal is to study how we can use failure to guide evolution to display different behaviours and analyse the effects of focusing on failure as the control mechanisms in evolutionary systems. Here we evolve neural networks that maximise the variety of failures in simulated agents trying to solve a task. As a fitness function, we use the variance of the performances of a "family" of agents in an environment with potentially infinite reward. In effect, we are optimising for a set of behaviours that lead to different ways to fail at the task. We find that Failure Diversity Maximisation (fdm) results in behavioral diversity in agents sharing the same network topology. This includes agents that perform as well as agents purely optimised for performance. Our results mimic an often overlooked aspect of evolution: agents do not only optimise one behaviour but expand to the limits of their behavioural possibilities.
+Our goal is to study how we can use failure to guide evolution to display different behaviours and analyse the effects of focusing on failure as the control mechanism in evolutionary systems. Here we evolve neural networks that maximise the variety of failures in simulated agents trying to solve a task. As a fitness function, we use the variance of the performances of a "family" of agents in an environment with potentially infinite reward. In effect, we are optimising for a set of behaviours that lead to different ways to fail at the task. We find that Failure Diversity Maximisation as well as Novelty Search converge to families of agents with diverse performance, including agents that perform as well as agents purely optimised for performance. Our results mimic an often overlooked aspect of evolution: agents do not only optimise one behaviour but expand to the limits of their behavioural possibilities.
 
 
 ## Table of contents
@@ -17,7 +17,7 @@ Our goal is to study how we can use failure to guide evolution to display differ
 
 This tool relies on Weight Agnostic Neural Networks (https://github.com/google/brain-tokyo-workshop/tree/master/WANNRelease), by Adam Gaier and David Ha.
 
-This project is implement in **Python3** and uses the libraries:
+This project is implemented in **Python3** and uses the libraries:
 
 1. NumPy (pip3 install numpy)
 2. mpi4py 3.0.1 (pip3 install mpi4py)
@@ -27,7 +27,7 @@ This project is implement in **Python3** and uses the libraries:
 
 Move to folder fmd/fmd_code
 
-- Using our Failure Diversity Maximisation (fdm)
+- Using Failure Diversity Maximisation (FDM)
 -- python3 fmd_train.py -p p/swingup_fdm.json -n 1 -o output
 - fdm and Novelty Search (ns)
 -- python3 fmd_train.py -p p/swingup_fmd_and_ns.json -n 1 -o output
