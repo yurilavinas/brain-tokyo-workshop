@@ -28,13 +28,13 @@ This project is implemented in **Python3** and uses the libraries:
 To train an agent, first move to folder fmd/fmd_code
 
 - Using Failure Diversity Maximisation (FDM)
--- python3 fmd_train.py -p p/swingup_fdm.json -n 1 -o output
+  - python3 fdm_train.py -p p/swingup_fdm.json -n 1 -o output
 - fdm and Novelty Search (ns)
--- python3 fmd_train.py -p p/swingup_fmd_and_ns.json -n 1 -o output
+  - python3 fdm_train.py -p p/swingup_fmd_and_ns.json -n 1 -o output
 - Novelty Search
--- python3 fmd_train.py -p p/swingup_ns.json -n 1 -o output
+  - python3 fdm_train.py -p p/swingup_ns.json -n 1 -o output
 - WANN - our baseline
--- python3 fmd_train.py -p p/swingup_wann.json -n 1 -o output
+  - python3 fdm_train.py -p p/swingup_wann.json -n 1 -o output
 
 Where:
 p/swingup_method_name.json are the parameter file, -n defines the number of cores to use for parallel execution and -o tells the name of the output files.
