@@ -101,7 +101,7 @@ class WannGymTask(GymTask):
     # else:
     
     if returnVals is True:
-      print(np.var(np.mean(reward,axis=0)))
-      return np.mean(reward,axis=0), wVals
+      # print(np.var(np.mean(reward,axis=0)))
+      return np.mean(reward,axis=0), np.std(reward,axis=0), wVals
     return np.mean(reward,axis=0)
 
