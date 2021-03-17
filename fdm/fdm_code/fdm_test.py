@@ -37,16 +37,22 @@ def main(argv):
   wVec, aVec, wKey = importNet(infile)
 
   # Show result
-  fitness, std, pos_x, pos_y, wVals = task.getFitness(wVec, aVec, hyp,
+  fitness, std, pos_0, pos_25, pos_50, pos_75, pos_100, wVals = task.getFitness(wVec, aVec, hyp,
                                 nVals=nMean, nRep=nRep,\
-                                view=view,returnVals=True, seed=seed)      
+                                view=view,returnVals=True, seed=1)      
   print("[***]\tFitness:", fitness , '\n' + "[***]\tWeight Values:\t" , wVals) 
-  print("[***]\tFinal position X:", pos_x) 
-  print("[***]\tFinal position Y:", pos_y) 
+  print("[***]\tpos_0:", pos_0) 
+  print("[***]\tpos_25:", pos_25) 
+  print("[***]\tpos_50:", pos_50)
+  print("[***]\tpos_75:", pos_50) 
+  print("[***]\tpos_100:", pos_100) 
 
   lsave('test_log/'+outPref+'_std.out',std)
-  lsave('test_log/'+outPref+'_pos_x.out',np.array([pos_x]))
-  lsave('test_log/'+outPref+'_pos_y.out',np.array([pos_y]))
+  lsave('test_log/'+outPref+'_pos_0.out',pos_0)
+  lsave('test_log/'+outPref+'_pos_25.out',pos_25)
+  lsave('test_log/'+outPref+'_pos_50.out',pos_50)
+  lsave('test_log/'+outPref+'_pos_75.out',pos_75)
+  lsave('test_log/'+outPref+'_pos_100.out',pos_100)
   lsave('test_log/'+outPref+'_reward.out',fitness)
   lsave('test_log/'+outPref+'_wVals.out',wVals)
   

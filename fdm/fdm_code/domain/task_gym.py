@@ -25,8 +25,7 @@ class GymTask():
     self.absWCap  = game.weightCap
     self.layers   = game.layers      
     self.activations = np.r_[np.full(1,1),game.i_act,game.o_act]
-    self.pos_x = 0
-    self.pos_y = 0
+    self.ang_pos = []
   
     # Environment
     self.nReps = nReps
@@ -95,8 +94,7 @@ class GymTask():
     # predName = str(np.mean(wVec[wVec!=0]))
     state, reward, done, info = self.env.step(action)
 
-    self.pos_x = state[0]
-    self.pos_y = state[2]
+    self.ang_pos.append(state[3])
 
     if self.maxEpisodeLength == 0:
       if view:
@@ -115,6 +113,7 @@ class GymTask():
       annOut = act(wVec, aVec, self.nInput, self.nOutput, state) 
       action = selectAct(annOut,self.actSelect) 
       state, reward, done, info = self.env.step(action)
+      self.ang_pos.append(state[3])
       totalReward += reward  
       if view:
         if self.needsClosed:
