@@ -25,12 +25,12 @@ This project is implemented in **Python3** and uses the libraries:
 
 ### Training
 
-To train an agent, first move to folder fmd/fmd_code
+To train an agent, first move to folder fdm/fdm_code
 
 - Using Failure Diversity Maximisation (FDM)
   - python3 fdm_train.py -p p/swingup_fdm.json -n 1 -o output
 - fdm and Novelty Search (ns)
-  - python3 fdm_train.py -p p/swingup_fmd_and_ns.json -n 1 -o output
+  - python3 fdm_train.py -p p/swingup_fd,_and_ns.json -n 1 -o output
 - Novelty Search
   - python3 fdm_train.py -p p/swingup_ns.json -n 1 -o output
 - WANN - our baseline
@@ -45,27 +45,27 @@ For more information on the parameters, [check the paper]()
 
 Failure Diversity Maximisation (fdm)
 <p align="left">
-  <img width="50%" src="fmd/fmd_code/videos/fmd.gif"></img>
+  <img width="50%" src="fdm/fdm_code/videos/fmd.gif"></img>
 </p>
 
 Failure Diversity Maximisation and Novelty Search
 <p align="left">
-  <img width="50%" src="fmd/fmd_code/videos/fmd_and_ns.gif"></img>
+  <img width="50%" src="fdm/fdm_code/videos/fmd_and_ns.gif"></img>
 </p>
 
 Novelty Search
 <p align="left">
-  <img width="50%" src="fmd/fmd_code/videos/ns.gif"></img>
+  <img width="50%" src="fdm/fdm_code/videos/ns.gif"></img>
 </p>
 
 
 WANN
 <p align="left">
-  <img width="50%" src="fmd/fmd_code/videos/wann.gif"></img>
+  <img width="50%" src="fdm/fdm_code/videos/wann.gif"></img>
 </p>
 
 
 ### Visualisation
 
-To run the code to generate the images access this [jupyter notebook](fmd/fmd_code/Visualization_Comparison.ipynb).
+To run the code to generate the images access this [jupyter notebook](fdm/fdm_code/Visualization_Comparison.ipynb).
 
