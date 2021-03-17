@@ -37,14 +37,18 @@ def main(argv):
   wVec, aVec, wKey = importNet(infile)
 
   # Show result
-  fitness, std, wVals = task.getFitness(wVec, aVec, hyp,
+  fitness, std, pos_x, pos_y, wVals = task.getFitness(wVec, aVec, hyp,
                                 nVals=nMean, nRep=nRep,\
                                 view=view,returnVals=True, seed=seed)      
-
   print("[***]\tFitness:", fitness , '\n' + "[***]\tWeight Values:\t" , wVals) 
-  lsave(outPref+'std.out',std)
-  lsave(outPref+'reward.out',fitness)
-  lsave(outPref+'wVals.out',wVals)
+  print("[***]\tFinal position X:", pos_x) 
+  print("[***]\tFinal position Y:", pos_y) 
+
+  lsave('test_log/'+outPref+'_std.out',std)
+  lsave('test_log/'+outPref+'_pos_x.out',np.array([pos_x]))
+  lsave('test_log/'+outPref+'_pos_y.out',np.array([pos_y]))
+  lsave('test_log/'+outPref+'_reward.out',fitness)
+  lsave('test_log/'+outPref+'_wVals.out',wVals)
   
 # -- --------------------------------------------------------------------- -- #
 def str2bool(v):

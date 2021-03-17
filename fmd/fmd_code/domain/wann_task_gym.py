@@ -80,15 +80,21 @@ class WannGymTask(GymTask):
 
     # Get reward from 'reps' rollouts -- test population on same seeds
     reward = np.empty((nRep,nVals))
+    pos_x = np.empty((nRep,nVals))
+    pos_y = np.empty((nRep,nVals))
     # reward2 = np.empty((nRep,nVals))  
 
     for iRep in range(nRep):
       for iVal in range(nVals):
         wMat = self.setWeights(wVec,wVals[iVal])
         if seed == -1:
-          reward[iRep,iVal] = self.testInd(wMat, aVec, view=view, seed=seed)
+          reward[iRep,iVal] = self.testInd(wMat, aVec, view=view, seed=seed, returnVals=returnVals)
+          if returnVals is True:
+            pos_x[iRep,iVal] = self.pos_x
+            pos_y[iRep,iVal] = self.pos_y
         else:
-          reward[iRep,iVal] = self.testInd(wMat, aVec, seed=seed+iRep,view=view)
+          reward[iRep,iVal] = self.testInd(wMat, aVec, seed=seed+iRep,view=view, returnVals=returnVals)
+
         # if  hyp['alg_selection'] == "var":
         #   reward[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=4))
         #   reward2[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=72456))
@@ -102,6 +108,6 @@ class WannGymTask(GymTask):
     
     if returnVals is True:
       # print(np.var(np.mean(reward,axis=0)))
-      return np.mean(reward,axis=0), np.std(reward,axis=0), wVals
+      return np.mean(reward,axis=0), np.std(reward,axis=0), np.std(pos_x,axis=0), np.std(pos_y,axis=0), wVals
     return np.mean(reward,axis=0)
 

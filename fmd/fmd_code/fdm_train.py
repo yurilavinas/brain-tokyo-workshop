@@ -25,6 +25,13 @@ def master():
   data = WannDataGatherer(fileName, hyp)
   alg  = Wann(hyp)
 
+  pref = 'log/' + 'swingup_var_pop' + '_pop/'
+  if os.path.exists(pref):
+    pop = alg.initPop()
+    import pickle
+    with open(pref+'_pop.checkpoint', 'rb') as fp:
+      pop = pickle.load(fp)
+
   for gen in range(hyp['maxGen']):        
     pop = alg.ask()            # Get newly evolved individuals from NEAT  
     reward = batchMpiEval(pop)  # Send pop to be evaluated by workers

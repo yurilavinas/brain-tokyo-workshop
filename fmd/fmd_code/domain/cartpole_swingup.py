@@ -39,6 +39,7 @@ class CartPoleSwingUpEnv(gym.Env):
         self.t = 0 # timestep
         #self.t_limit = 200
         self.t_limit = 1000
+        # self.velocity = []
 
         # Angle at which to fail the episode
         self.theta_threshold_radians = 12 * 2 * math.pi / 360
@@ -106,7 +107,6 @@ class CartPoleSwingUpEnv(gym.Env):
 
         x,x_dot,theta,theta_dot = self.state
 
-
         done = False
         if  x < -self.x_threshold or x > self.x_threshold:
           done = True
@@ -124,6 +124,7 @@ class CartPoleSwingUpEnv(gym.Env):
 
         x,x_dot,theta,theta_dot = noise_obs
         obs = np.array([x,x_dot,np.cos(theta),np.sin(theta),theta_dot])
+
 
         return obs, reward, done, {}
 
