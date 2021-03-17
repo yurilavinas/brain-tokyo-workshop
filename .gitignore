@@ -1,2 +1,4 @@
 fdm/fdm_code/log/*
 fdm/fdm_code/test_log/*
+fdm/fdm_code/log
+fdm/fdm_code/test_log
