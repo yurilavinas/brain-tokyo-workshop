@@ -15,7 +15,7 @@ Our goal is to study how we can use failure to guide evolution to display differ
 
 ### Technologies 
 
-This tool relies on Weight Agnostic Neural Networks (https://github.com/google/brain-tokyo-workshop/tree/master/WANNRelease), by Adam Gaier and David Ha.
+This tool relies on (Weight Agnostic Neural Networks)[https://github.com/google/brain-tokyo-workshop/tree/master/WANNRelease], by Adam Gaier and David Ha.
 
 This project is implemented in **Python3** and uses the libraries:
 
