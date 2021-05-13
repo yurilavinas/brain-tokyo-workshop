@@ -37,24 +37,40 @@ def main(argv):
   wVec, aVec, wKey = importNet(infile)
 
   # Show result
-  fitness, std, pos_0, pos_25, pos_50, pos_75, pos_100, wVals = task.getFitness(wVec, aVec, hyp,
+  fitness, std, \
+  wVals, ang_pos, pos_x = task.getFitness(wVec, aVec, hyp,
                                 nVals=nMean, nRep=nRep,\
-                                view=view,returnVals=True, seed=1)      
-  print("[***]\tFitness:", fitness , '\n' + "[***]\tWeight Values:\t" , wVals) 
-  print("[***]\tpos_0:", pos_0) 
-  print("[***]\tpos_25:", pos_25) 
-  print("[***]\tpos_50:", pos_50)
-  print("[***]\tpos_75:", pos_50) 
-  print("[***]\tpos_100:", pos_100) 
+                                view=view,returnVals=True, seed=seed)      
 
+  for i in range(nMean):
+
+    lsave('behaviour/'+outPref+'_ang_value_'+str(i)+'.out',np.hstack(ang_pos[i]))    
+    lsave('behaviour/'+outPref+'_pos_x_'+str(i)+'.out',np.hstack(pos_x[i]))
+    
   lsave('test_log/'+outPref+'_std.out',std)
-  lsave('test_log/'+outPref+'_pos_0.out',pos_0)
-  lsave('test_log/'+outPref+'_pos_25.out',pos_25)
-  lsave('test_log/'+outPref+'_pos_50.out',pos_50)
-  lsave('test_log/'+outPref+'_pos_75.out',pos_75)
-  lsave('test_log/'+outPref+'_pos_100.out',pos_100)
-  lsave('test_log/'+outPref+'_reward.out',fitness)
   lsave('test_log/'+outPref+'_wVals.out',wVals)
+
+  
+  
+  # lsave('behaviour/'+outPref+'_std.out',std)
+  # lsave('behaviour/'+outPref+'_vel_0.out',vel_0)
+  # lsave('behaviour/'+outPref+'_vel_25.out',vel_25)
+  # lsave('behaviour/'+outPref+'_vel_50.out',vel_50)
+  # lsave('behaviour/'+outPref+'_vel_75.out',vel_75)
+  # lsave('behaviour/'+outPref+'_vel_100.out',vel_100)
+  # lsave('behaviour/'+outPref+'_pos_x_0.out',pos_x_0)
+  # lsave('behaviour/'+outPref+'_pos_x_25.out',pos_x_25)
+  # lsave('behaviour/'+outPref+'_pos_x_50.out',pos_x_50)
+  # lsave('behaviour/'+outPref+'_pos_x_75.out',pos_x_75)
+  # lsave('behaviour/'+outPref+'_pos_x_100.out',pos_x_100)
+  
+  # lsave('behaviour/'+outPref+'_pos_y_0.out',pos_y_0)
+  # lsave('behaviour/'+outPref+'_pos_y_25.out',pos_y_25)
+  # lsave('behaviour/'+outPref+'_pos_y_50.out',pos_y_50)
+  # lsave('behaviour/'+outPref+'_pos_y_75.out',pos_y_75)
+  # lsave('behaviour/'+outPref+'_pos_y_100.out',pos_y_100)
+  # lsave('behaviour/'+outPref+'_reward.out',fitness)
+  # lsave('behaviour/'+outPref+'_wVals.out',wVals)
   
 # -- --------------------------------------------------------------------- -- #
 def str2bool(v):

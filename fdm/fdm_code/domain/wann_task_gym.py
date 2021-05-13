@@ -80,38 +80,27 @@ class WannGymTask(GymTask):
 
     # Get reward from 'reps' rollouts -- test population on same seeds
     reward = np.empty((nRep,nVals))
-    pos_0 = np.empty((nRep,nVals))
-    pos_25 = np.empty((nRep,nVals))
-    pos_50 = np.empty((nRep,nVals))
-    pos_75 = np.empty((nRep,nVals))
-    pos_100 = np.empty((nRep,nVals))
-
+    ang_pos =  [[]] * nVals
+    pos_x =  [[]] * nVals
+    
     for iRep in range(nRep):
       for iVal in range(nVals):
         wMat = self.setWeights(wVec,wVals[iVal])
+        
         if seed == -1:
           reward[iRep,iVal] = self.testInd(wMat, aVec, view=view, seed=seed, returnVals=returnVals)
         else:
           reward[iRep,iVal] = self.testInd(wMat, aVec, seed=seed+iRep,view=view, returnVals=returnVals)
-
         if returnVals is True:
-            pos_0[iRep,iVal] = self.ang_pos[0]
-            pos_25[iRep,iVal] = self.ang_pos[round(len(self.ang_pos)/4)]
-            pos_50[iRep,iVal] = self.ang_pos[round(len(self.ang_pos)/2)]
-            pos_75[iRep,iVal] = self.ang_pos[round(3*len(self.ang_pos)/4)]
-            pos_100[iRep,iVal] = self.ang_pos[len(self.ang_pos)-1]
-        # if  hyp['alg_selection'] == "var":
-        #   reward[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=4))
-        #   reward2[iRep,iVal] = (self.testInd(wMat, aVec, game, folder = None, view=view, seed=72456))
-        # else:
-    # if hyp['alg_selection'] == "var":
-    #   if returnVals is True:
-    #     return np.concatenate([np.mean(reward,axis=0), np.mean(reward2,axis=0)]), wVals
-    #   else:
-    #     return np.concatenate([np.mean(reward,axis=0), np.mean(reward2,axis=0)])
-    # else:
-    
+          ang_pos[iVal] = self.ang_pos
+          pos_x[iVal] = self.pos_x
+
     if returnVals is True:
-      return np.mean(reward,axis=0), np.std(reward,axis=0), np.mean(pos_0,axis=0), np.mean(pos_25,axis=0), np.mean(pos_50,axis=0), np.mean(pos_75,axis=0), np.var(pos_100,axis=0), wVals
+      return np.mean(reward,axis=0), np.std(reward,axis=0), wVals, ang_pos, pos_x
+      # return np.mean(reward,axis=0), np.std(reward,axis=0), \
+      # np.mean(vel_0,axis=0), np.mean(vel_25,axis=0), np.mean(vel_50,axis=0), np.mean(vel_75,axis=0), np.mean(vel_100,axis=0), \
+      # np.mean(pos_x_0,axis=0), np.mean(pos_x_25,axis=0), np.mean(pos_x_50,axis=0), np.mean(pos_x_75,axis=0), np.mean(pos_x_100,axis=0), \
+      # np.mean(pos_y_0,axis=0), np.mean(pos_y_25,axis=0), np.mean(pos_y_50,axis=0), np.mean(pos_y_75,axis=0), np.mean(pos_y_100,axis=0), \
+      # wVals
     return np.mean(reward,axis=0)
 

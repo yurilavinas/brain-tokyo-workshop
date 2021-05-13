@@ -65,13 +65,14 @@ class CartPoleSwingUpEnv(gym.Env):
         '''
         Changes the environment, envChange is the percent change of parameter
         '''
+        print("self.l_base*envChange", self.l_base*envChange)
         self.l = self.l_base*envChange
 
-    def setNoise(self, noiseVariance):
-        '''
-        Changes the leven of input noise
-        '''
-        self.noise = noiseVariance
+    # def setNoise(self, noiseVariance):
+    #     '''
+    #     Changes the leven of input noise
+    #     '''
+    #     self.noise = noiseVariance
 
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
@@ -79,6 +80,10 @@ class CartPoleSwingUpEnv(gym.Env):
 
     def stateUpdate(self,action,state, noise=0):
         x, x_dot, theta, theta_dot = state
+        # if (len(state)) == 4:
+        #     x, x_dot, theta, theta_dot = state
+        # else:
+        #     x, x_dot, theta, theta_dot, _ = state
         x     += np.random.randn() * noise
         theta += np.random.randn() * noise
 
@@ -106,6 +111,7 @@ class CartPoleSwingUpEnv(gym.Env):
         self.state = self.stateUpdate(action, self.state)
 
         x,x_dot,theta,theta_dot = self.state
+        # x,x_dot,theta,theta_dot, _ = self.state
 
         done = False
         if  x < -self.x_threshold or x > self.x_threshold:
@@ -123,8 +129,9 @@ class CartPoleSwingUpEnv(gym.Env):
         #reward = (np.cos(theta)+1.0)/2.0
 
         x,x_dot,theta,theta_dot = noise_obs
-        obs = np.array([x,x_dot,np.cos(theta),np.sin(theta),theta_dot])
-
+        # x,x_dot,theta,theta_dot, _ = noise_obs
+        # obs = np.array([x,x_dot,np.cos(theta),np.sin(theta),theta_dot])
+        obs = np.array([x,x_dot,np.cos(theta),np.sin(theta),theta_dot, theta])
 
         return obs, reward, done, {}
 
@@ -134,7 +141,9 @@ class CartPoleSwingUpEnv(gym.Env):
         self.steps_beyond_done = None
         self.t = 0 # timestep
         x, x_dot, theta, theta_dot = self.state
-        obs = np.array([x,x_dot,np.cos(theta),np.sin(theta),theta_dot])
+    
+        # obs = np.array([x,x_dot,np.cos(theta),np.sin(theta),theta_dot])
+        obs = np.array([x,x_dot,np.cos(theta),np.sin(theta),theta_dot, theta])
         return obs
 
     def render(self, mode='human', close=False):
@@ -154,7 +163,6 @@ class CartPoleSwingUpEnv(gym.Env):
         polelen = scale*self.l  # 0.6 or self.l
         cartwidth = 40.0
         cartheight = 20.0
-
         if self.viewer is None:
             from gym.envs.classic_control import rendering
             self.viewer = rendering.Viewer(screen_width, screen_height)
