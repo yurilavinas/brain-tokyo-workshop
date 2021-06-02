@@ -1,0 +1,9 @@
+{
+    "task":"swingup",
+    "maxGen": 500,
+    "alg_nReps": 1,
+    "popSize": 10,
+    "select_eliteRatio": 0.2,
+    "select_tournSize": 8,
+    "alg_selection": "count"
+}

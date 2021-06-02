@@ -36,7 +36,7 @@ class Neat():
     self.innov   = [] 
     self.gen     = 0  
     self.mean     = 0  
-    self.var     = 0  
+    # self.var     = 0  
     self.novelty     = 0  
 
     self.indType = Ind
@@ -58,8 +58,10 @@ class Neat():
         self.probMoo()      # Rank population according to objectivess
       elif p['alg_selection'] == "novelty":
         self.selNovelty()      # Rank population according to novelty
-      # elif p['alg_selection'] == "dist":
-      #   self.selStats() 
+      elif p['alg_selection'] == "stats":
+        self.selStats() 
+      elif p['alg_selection'] == "count":
+        self.selCount() 
       elif p['alg_selection'] == "var_multi":
         self.selFailureMulti() 
       elif p['alg_selection'] == "var":
@@ -181,25 +183,24 @@ class Neat():
     for i in range(len(self.pop)):
       self.pop[i].rank = rank[i]
  
-  # def selStats(self):
+  def selStats(self):
 
-  #   fitness = [ind.fitness for ind in self.pop]
-  #   elite = self.pop[np.argmax(fitness)]
+    stat = [ind.stat for ind in self.pop]
+    rank = np.argsort(stat)
 
-  #   p_values = list()
-  #   max_value = float('-inf')
-  #   for i in range(len(self.pop)):
-  #       fitMax  = np.mean(self.pop[i].rewards)
-  #       if (max_value < fitMax):
-  #         max_value = fitMax
-  #         j = i
-  #   for i in range(len(self.pop)):
-  #     __, p_value = stats.ttest_ind(self.pop[i].rewards, elite.rewards, equal_var = True)  
-  #     p_values.append(p_value)
-  #   rank = np.argsort(p_values)
-  #   for i in range(len(self.pop)):
-  #     self.pop[i].rank = rank[i]
 
+    # Assign ranks
+    for i in range(len(self.pop)):
+      self.pop[i].rank = rank[i]
+
+  def selCount(self):
+
+    count = np.asarray([ind.count for ind in self.pop])
+    rank = np.argsort(count)[::-1]
+    
+    # Assign ranks
+    for i in range(len(self.pop)):
+      self.pop[i].rank = rank[i]
       
 def loadHyp(pFileName, printHyp=False):
   """Loads hyperparameters from .json file

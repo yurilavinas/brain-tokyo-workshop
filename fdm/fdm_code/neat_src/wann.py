@@ -7,6 +7,7 @@ from domain import *  # Task environments
 from utils import *
 from .nsga_sort import nsga_sort
 from .neat import Neat
+from scipy import special
 
 
 class Wann(Neat):
@@ -44,30 +45,30 @@ class Wann(Neat):
 
     p = self.p
 
-    # if p['alg_selection'] == "var":
 
 
-    #   for i in range(np.shape(reward)[0]):
-    #     reward[i] = np.clip(reward[i],0, max(reward[i]))
-    #     reward1 = reward[i][0:8]
-    #     reward2 = reward[i][8:16]
-    #     var1 = np.var(reward1)
-    #     var2 = np.var(reward2)        
-    #     self.pop[i].fitness = np.mean(reward[i,:])
-    #     self.pop[i].mean = self.pop[i].fitness
-    #     self.pop[i].var = var1 + var2
-    #     self.pop[i].fitMax  = np.max(reward[i])
-    #     self.pop[i].nConn   = self.pop[i].nConn
-    #     self.pop[i].rewards   = (reward1 + reward2)/2
-    # else:
     for i in range(np.shape(reward)[0]):
-      self.pop[i].fitness = np.mean(reward[i,:])
-      self.pop[i].fitMax  = np.max( reward[i,:])
-      self.pop[i].nConn   = self.pop[i].nConn
       
-      self.pop[i].var = np.var(np.clip(reward[i,:], 0, max(reward[i,:])))
-      self.pop[i].rewards   = reward
 
+      if p['alg_selection'] == "count":
+        self.pop[i].count = reward[i,len(reward[i,:])-1]
+        print(self.pop[i].count)
+        exit()
+        my_data = np.delete(reward[i,:], len(reward[i,:])-1) 
+      else:
+        my_data = reward[i,:]
+
+
+      self.pop[i].fitness = np.mean(my_data)
+      self.pop[i].fitMax  = np.max(my_data)
+      self.pop[i].nConn   = self.pop[i].nConn
+      mean_vec = np.full(shape=p['alg_nVals'],fill_value = self.pop[i].fitness)
+      self.pop[i].kl_stat = np.sum(special.kl_div(np.asarray(my_data), mean_vec))
+      # self.pop[i].kl_stat = np.sum(special.kl_div(np.asarray(reward[i,:]), unif_sampled))
+      # self.pop[i].stat = stats.kstest(reward[i,:], stats.randint.cdf, args=(0,np.max(reward)))[1]
+      self.pop[i].var = np.var(np.clip(reward[i,:], 0, max(my_data)))
+      self.pop[i].rewards   = my_data
+      
     novelty = np.zeros(len(self.pop))
     for i in range(len(self.pop)):
       self.pop[i].novelty = sparseness(self.archive, self.pop, self.pop[i].conn)

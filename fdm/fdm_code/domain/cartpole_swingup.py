@@ -122,7 +122,7 @@ class CartPoleSwingUpEnv(gym.Env):
           done = True
 
         # Reward staying in the middle
-        reward_theta = (np.cos(theta)+1.0)/2.0
+        reward_theta  = (np.cos(theta)+1.0)/2.0
         reward_x = np.cos((x/self.x_threshold)*(np.pi/2.0))
 
         reward = reward_theta*reward_x

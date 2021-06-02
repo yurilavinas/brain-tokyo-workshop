@@ -136,7 +136,10 @@ def batchMpiEval(pop, sameSeedForEachIndividual=True):
   else:
     seed = np.random.randint(1000)
 
-  reward = np.empty( (nJobs,hyp['alg_nVals']), dtype=np.float64)
+  if(hyp['alg_selection'] == "count"):
+    reward = np.empty( (nJobs,hyp['alg_nVals']+1), dtype=np.float64)
+  else:
+    reward = np.empty( (nJobs,hyp['alg_nVals']), dtype=np.float64)   
   i = 0 # Index of fitness we are filling
   for iBatch in range(nBatch): # Send one batch of individuals
     for iWork in range(nSlave): # (one to each worker if there)
@@ -164,10 +167,14 @@ def batchMpiEval(pop, sameSeedForEachIndividual=True):
     i -= nSlave
     for iWork in range(1,nSlave+1):
       if i < nJobs:
-        workResult = np.empty(hyp['alg_nVals'], dtype='d')
+        if(hyp['alg_selection'] == "count"):
+          workResult = np.empty(hyp['alg_nVals']+1, dtype='d')
+        else:
+          workResult = np.empty(hyp['alg_nVals'], dtype='d')
         comm.Recv(workResult, source=iWork)
         reward[i,:] = workResult
       i+=1
+
   return reward
 
 def slave():
@@ -199,10 +206,12 @@ def slave():
       aVec = np.empty(n_aVec, dtype='d')# allocate space to receive activation
       comm.Recv(aVec, source=0,  tag=4) # recieve it
       seed = comm.recv(source=0, tag=5) # random seed as int
-
-      result = task.getFitness(wVec,aVec,hyp,seed=seed) # process it
+      if(hyp['alg_selection'] == "count"):
+        result, count = task.getFitness(wVec,aVec,hyp,seed=seed) # process it
+        result = np.append(result,count)
+      else:
+        result = task.getFitness(wVec,aVec,hyp,seed=seed) # process it
       comm.Send(result, dest=0)            # send it back
-
     if n_wVec < 0: # End signal recieved
       print('Worker # ', rank, ' shutting down.')
       break
@@ -231,7 +240,7 @@ def mpi_fork(n):
       IN_MPI="1"
     )
     # print( ["/usr/lib64/openmpi/bin/mpirun ", "-np", str(n), sys.executable] + sys.argv)
-    subprocess.check_call(["/usr/lib64/openmpi/bin/mpirun", "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
+    subprocess.check_call(["mpirun", "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
     return "parent"
   else:
     global nWorker, rank
