@@ -4,6 +4,7 @@ import sys
 from domain.make_env import make_env
 from domain.task_gym import GymTask
 from neat_src import *
+import math
 
 
 class WannGymTask(GymTask):
@@ -73,34 +74,76 @@ class WannGymTask(GymTask):
 
     # Set weight values to test WANN with
     if (hyp['alg_wDist'] == "standard") and nVals==8: # Double, constant, and half signal 
-      wVals = np.array((-2,-1.5,-1.0,-0.5,0.5,1.0,1.5,2))
+      wVals = np.array((-2,2,0.5,-1.5,-1.0,-0.5,1.0,1.5))
     else:
       wVals = np.linspace(-self.absWCap, self.absWCap ,nVals)
 
 
     # Get reward from 'reps' rollouts -- test population on same seeds
     reward = np.empty((nRep,nVals))
-    ang_pos =  [[]] * nVals
+    cos =  [[]] * nVals
+    sin =  [[]] * nVals
     pos_x =  [[]] * nVals
+    count =  [[]] * nVals
     
     for iRep in range(nRep):
       for iVal in range(nVals):
         wMat = self.setWeights(wVec,wVals[iVal])
         
         if seed == -1:
-          reward[iRep,iVal] = self.testInd(wMat, aVec, view=view, seed=seed, returnVals=returnVals)
+          reward[iRep,iVal] = self.testInd(wMat, aVec, view=view, seed=42, returnVals=returnVals)
         else:
-          reward[iRep,iVal] = self.testInd(wMat, aVec, seed=seed+iRep,view=view, returnVals=returnVals)
-        if returnVals is True:
-          ang_pos[iVal] = self.ang_pos
-          pos_x[iVal] = self.pos_x
+          reward[iRep,iVal] = self.testInd(wMat, aVec, seed=42,view=view, returnVals=returnVals)
+        cos[iVal] = self.cos
+        sin[iVal] = self.sin
+        pos_x[iVal] = self.pos_x
+
+    
+
+        if(hyp['alg_selection'] == "count"):
+
+          pos_x_ = pos_x[iVal]
+          cos = cos[iVal]
+          sin = sin[iVal]
+          
+          x = np.array([i*0.6 for i in cos]) + pos_x_
+          y = np.array([i*0.6 for i in sin]) + pos_x_
+          
+          if  x[len(x)-1] < -2.4:
+            count[iVal] = -1 # -1 - exit to the left
+          elif x[len(x)-1] > 2.4: 
+            count[iVal] = 1 # 1 - exit to the right
+          
+          else:
+            tmp = y > 0
+            j = 0
+            count[iVal] = 1
+            for i in range(len(tmp)):
+              if j != i:
+                if tmp[j]!= tmp[i]: 
+                  j = i
+                  count[iVal] += 1 # couting transitions between below and above horizontal line
+            count[iVal] = count[iVal]/2 # times the pole move to an upward position
+
+            if count[iVal] == 0.5:
+              count[iVal] = 0 # 0 -  success
+            else:
+              left = sum(x > 0) 
+              right = sum(x < 0)
+              if (left != right):
+                idx = np.argmax(np.asarray([left, right]))
+                if (idx == 0):
+                  count[iVal] = -2 # -2 - looping to the left
+                else:
+                  count[iVal] = 2 # 2 - looping to the right
+              else:
+                count[iVal] = 3 # 3 - looping both ways, equally
 
     if returnVals is True:
-      return np.mean(reward,axis=0), np.std(reward,axis=0), wVals, ang_pos, pos_x
-      # return np.mean(reward,axis=0), np.std(reward,axis=0), \
-      # np.mean(vel_0,axis=0), np.mean(vel_25,axis=0), np.mean(vel_50,axis=0), np.mean(vel_75,axis=0), np.mean(vel_100,axis=0), \
-      # np.mean(pos_x_0,axis=0), np.mean(pos_x_25,axis=0), np.mean(pos_x_50,axis=0), np.mean(pos_x_75,axis=0), np.mean(pos_x_100,axis=0), \
-      # np.mean(pos_y_0,axis=0), np.mean(pos_y_25,axis=0), np.mean(pos_y_50,axis=0), np.mean(pos_y_75,axis=0), np.mean(pos_y_100,axis=0), \
-      # wVals
-    return np.mean(reward,axis=0)
+      return np.mean(reward,axis=0), np.std(reward,axis=0), wVals, cos, sin, pos_x
+    elif(hyp['alg_selection'] == "count"):  
+      count = len(np.unique(count))
+      return np.mean(reward,axis=0), count
+    else:
+      return np.mean(reward,axis=0)
 

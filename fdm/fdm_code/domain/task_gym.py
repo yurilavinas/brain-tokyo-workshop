@@ -63,7 +63,7 @@ class GymTask():
     for iRep in range(nRep):
       if seed > 0:
         seed = seed+iRep
-      reward[iRep] = self.testInd(wVec, aVec, view=view, seed=seed)
+      reward[iRep] = self.testInd(wVec, aVec, view=view, seed=42)
     fitness = np.mean(reward)
     return fitness
 
@@ -83,17 +83,21 @@ class GymTask():
       fitness - (float)    - reward earned in trial
     """
 
-    self.ang_pos = []
+    # self.ang_pos = []
+    self.cos = []
+    self.sin = []
     self.pos_x = []
     self.pos_y = []
 
     # if seed >= 0:
-    #   random.seed(seed)
-    #   np.random.seed(seed)
-    #   self.env.seed(seed)
+    random.seed(42)
+    np.random.seed(42)
+    self.env.seed(42)
       
     state = self.env.reset()
-    self.ang_pos.append(state[5])
+    # self.ang_pos.append(state[5])
+    self.cos.append(state[2])
+    self.sin.append(state[3])
     self.pos_x.append(state[0]) 
     
     self.env.t = 0
@@ -101,8 +105,10 @@ class GymTask():
     action = selectAct(annOut,self.actSelect)    
    
     state, reward, done, info = self.env.step(action)
-    self.ang_pos.append(state[5])
+    # self.ang_pos.append(state[5])
     self.pos_x.append(state[0]) 
+    self.cos.append(state[2])
+    self.sin.append(state[3])
   
     if self.maxEpisodeLength == 0:
       if view:
@@ -122,8 +128,10 @@ class GymTask():
       action = selectAct(annOut,self.actSelect) 
       state, reward, done, info = self.env.step(action)
       
-      self.ang_pos.append(state[5])
+      # self.ang_pos.append(state[5])
       self.pos_x.append(state[0])
+      self.cos.append(state[2])
+      self.sin.append(state[3])
 
       totalReward += reward  
       if view:

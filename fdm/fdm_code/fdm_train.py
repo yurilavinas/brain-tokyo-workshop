@@ -5,7 +5,12 @@ import math
 import argparse
 import subprocess
 import numpy as np
-np.set_printoptions(precision=2, linewidth=160) 
+np.set_printoptions(precision=2, linewidth=180) 
+
+import random
+random.seed(42)
+np.random.seed(42)
+
 
 # MPI
 from mpi4py import MPI
@@ -15,6 +20,26 @@ rank = comm.Get_rank()
 # prettyNeat
 from neat_src import * # NEAT and WANNs
 from domain import *   # Task environments
+import pickle
+
+
+# def savePop2(pop):
+#     folder = 'init_pop/'
+#     if not os.path.exists(folder):
+#       os.makedirs(folder)
+
+#     for i in range(len(pop)):
+#       exportNet(folder+'ind_'+str(i)+'.out', pop[i].wMat, pop[i].aVec)
+
+
+def loadPop(pop):
+  folder = 'init_pop/'
+  if not os.path.exists(folder):
+    os.makedirs(folder)
+
+  for i in range(len(pop)):
+    pop[i].wVec, pop[i].aVec, _ = importNet(folder+'ind_'+str(i)+'.out')
+  return (pop) 
 
 
 # -- Run NEAT ------------------------------------------------------------ -- #
@@ -25,21 +50,20 @@ def master():
   data = WannDataGatherer(fileName, hyp)
   alg  = Wann(hyp)
 
-  # pref = 'log/' + 'swingup_var_pop' + '_pop/'
-  # if os.path.exists(pref):
-  #   pop = alg.initPop()
-  #   import pickle
-  #   with open(pref+'_pop.checkpoint', 'rb') as fp:
-  #     pop = pickle.load(fp)
+  pop = alg.ask()            # Get newly evolved individuals from NEAT  
+
+  # savePop2(pop)
+  pop = loadPop(pop)
+  
 
   for gen in range(hyp['maxGen']):        
-    pop = alg.ask()            # Get newly evolved individuals from NEAT  
+    
     reward = batchMpiEval(pop)  # Send pop to be evaluated by workers
     alg.tell(reward)           # Send fitness to NEAT    
 
     data = gatherData(data,alg,gen,hyp)
     print(gen, '\t', data.display())
-
+    pop = alg.ask()            # Get newly evolved individuals from NEAT  
   # Clean up and data gathering at run end
   data = gatherData(data,alg,gen,hyp,savePop=True)
   data.save()
@@ -63,7 +87,7 @@ def gatherData(data,alg,gen,hyp,savePop=False):
   """
   data.gatherData(alg.pop, alg.species)
   if (gen%hyp['save_mod']) == 0:
-    # data = checkBest(data)
+    data = checkBest(data)
     data.save(gen)
 
   if savePop is True: # Get a sample pop to play with in notebooks    
@@ -132,11 +156,14 @@ def batchMpiEval(pop, sameSeedForEachIndividual=True):
 
     # Set same seed for each individual
   if sameSeedForEachIndividual is False:
-    seed = np.random.randint(1000, size=nJobs)
+    seed = 42#np.random.randint(1000, size=nJobs)
   else:
-    seed = np.random.randint(1000)
+    seed = 42#np.random.randint(1000)
 
-  reward = np.empty( (nJobs,hyp['alg_nVals']), dtype=np.float64)
+  if(hyp['alg_selection'] == "count"):
+    reward = np.empty( (nJobs,hyp['alg_nVals']+1), dtype=np.float64)
+  else:
+    reward = np.empty( (nJobs,hyp['alg_nVals']), dtype=np.float64)   
   i = 0 # Index of fitness we are filling
   for iBatch in range(nBatch): # Send one batch of individuals
     for iWork in range(nSlave): # (one to each worker if there)
@@ -164,10 +191,14 @@ def batchMpiEval(pop, sameSeedForEachIndividual=True):
     i -= nSlave
     for iWork in range(1,nSlave+1):
       if i < nJobs:
-        workResult = np.empty(hyp['alg_nVals'], dtype='d')
+        if(hyp['alg_selection'] == "count"):
+          workResult = np.empty(hyp['alg_nVals']+1, dtype='d')
+        else:
+          workResult = np.empty(hyp['alg_nVals'], dtype='d')
         comm.Recv(workResult, source=iWork)
         reward[i,:] = workResult
       i+=1
+
   return reward
 
 def slave():
@@ -199,10 +230,12 @@ def slave():
       aVec = np.empty(n_aVec, dtype='d')# allocate space to receive activation
       comm.Recv(aVec, source=0,  tag=4) # recieve it
       seed = comm.recv(source=0, tag=5) # random seed as int
-
-      result = task.getFitness(wVec,aVec,hyp,seed=seed) # process it
+      if(hyp['alg_selection'] == "count"):
+        result, count = task.getFitness(wVec,aVec,hyp,seed=seed) # process it
+        result = np.append(result,count)
+      else:
+        result = task.getFitness(wVec,aVec,hyp,seed=seed) # process it
       comm.Send(result, dest=0)            # send it back
-
     if n_wVec < 0: # End signal recieved
       print('Worker # ', rank, ' shutting down.')
       break
@@ -231,7 +264,7 @@ def mpi_fork(n):
       IN_MPI="1"
     )
     # print( ["/usr/lib64/openmpi/bin/mpirun ", "-np", str(n), sys.executable] + sys.argv)
-    subprocess.check_call(["/usr/lib64/openmpi/bin/mpirun", "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
+    subprocess.check_call(["mpirun", "-np", str(n), sys.executable] +['-u']+ sys.argv, env=env)
     return "parent"
   else:
     global nWorker, rank

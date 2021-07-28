@@ -94,7 +94,7 @@ games['mnist256'] = mnist256
 cartpole_swingup = Game(env_name='CartPoleSwingUp_Hard',
   actionSelect='all', # all, soft, hard
   # input_size=5,
-  input_size=6,
+  input_size=5,
   output_size=1,
   time_factor=0,
   layers=[5, 5],

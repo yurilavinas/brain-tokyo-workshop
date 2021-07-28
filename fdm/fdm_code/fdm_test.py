@@ -38,13 +38,14 @@ def main(argv):
 
   # Show result
   fitness, std, \
-  wVals, ang_pos, pos_x = task.getFitness(wVec, aVec, hyp,
+  wVals, cos, sin, pos_x = task.getFitness(wVec, aVec, hyp,
                                 nVals=nMean, nRep=nRep,\
                                 view=view,returnVals=True, seed=seed)      
 
   for i in range(nMean):
 
-    lsave('behaviour/'+outPref+'_ang_value_'+str(i)+'.out',np.hstack(ang_pos[i]))    
+    lsave('behaviour/'+outPref+'_cos_'+str(i)+'.out',np.hstack(cos[i]))    
+    lsave('behaviour/'+outPref+'_sin_'+str(i)+'.out',np.hstack(sin[i]))    
     lsave('behaviour/'+outPref+'_pos_x_'+str(i)+'.out',np.hstack(pos_x[i]))
     
   lsave('test_log/'+outPref+'_std.out',std)
@@ -69,8 +70,8 @@ def main(argv):
   # lsave('behaviour/'+outPref+'_pos_y_50.out',pos_y_50)
   # lsave('behaviour/'+outPref+'_pos_y_75.out',pos_y_75)
   # lsave('behaviour/'+outPref+'_pos_y_100.out',pos_y_100)
-  # lsave('behaviour/'+outPref+'_reward.out',fitness)
-  # lsave('behaviour/'+outPref+'_wVals.out',wVals)
+  lsave('test_log/'+outPref+'_reward.out',fitness)
+  lsave('test_log/'+outPref+'_wVals.out',wVals)
   
 # -- --------------------------------------------------------------------- -- #
 def str2bool(v):
